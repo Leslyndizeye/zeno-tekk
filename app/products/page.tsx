@@ -73,7 +73,7 @@ export default function ProductsPage() {
                 key={project.id}
                 data-aos="zoom-in"
                 data-aos-delay={index * 100}
-                className="group overflow-hidden border-border bg-card hover:shadow-2xl transition-all duration-700"
+                className="group overflow-hidden border-border bg-card hover:shadow-2xl transition-all duration-700 p-0"
               >
                 {/* Image with blur overlay effect */}
                 <div className="relative h-64 overflow-hidden">

@@ -176,7 +176,7 @@ export default function BlogPage() {
                 key={index}
                 data-aos="fade-up"
                 data-aos-delay={index * 100}
-                className="overflow-hidden group hover:shadow-xl transition-all duration-300 border-border bg-card"
+                className="overflow-hidden group hover:shadow-xl transition-all duration-300 border-border bg-card p-0"
               >
                 <div className="relative h-48 overflow-hidden">
                   <img

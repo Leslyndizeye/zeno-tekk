@@ -11,10 +11,9 @@ export function Footer() {
           {/* Company Info */}
           <div className="space-y-4" data-aos="fade-up">
             <div className="flex items-center gap-2">
-              <div className="w-10 h-10 bg-gradient-to-br from-primary to-blue-600 rounded-xl flex items-center justify-center shadow-lg">
-                <span className="text-primary-foreground font-bold text-xl">Z</span>
+              <div className="w-28 rounded-xl flex items-center justify-center">
+                <img src="logo.png" alt="" />
               </div>
-              <span className="font-bold text-xl">ZENO TEKK</span>
             </div>
             <p className="text-sm text-muted-foreground leading-relaxed max-w-xs text-pretty">
               Transforming ideas into innovative software solutions. Building the future, one line of code at a time.

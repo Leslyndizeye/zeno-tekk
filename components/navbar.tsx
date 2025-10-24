@@ -57,23 +57,11 @@ export function Navbar() {
             <Link href="/" className="flex items-center gap-3 group">
               <div
                 className={`relative transition-all duration-700 ease-out ${
-                  isScrolled ? "w-10 h-10" : "w-12 h-12"
-                } bg-gradient-to-br from-primary to-blue-600 rounded-xl flex items-center justify-center shadow-lg group-hover:shadow-primary/50 group-hover:scale-110`}
+                  isScrolled ? "w-28" : "w-36"
+                } flex items-center justify-center`}
               >
-                <span
-                  className={`text-primary-foreground font-black transition-all duration-700 ease-out ${
-                    isScrolled ? "text-xl" : "text-2xl"
-                  }`}
-                >
-                  Z
-                </span>
-                <div className="absolute inset-0 bg-gradient-to-br from-white/20 to-transparent rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                <img src="logo.png" alt="logo" />
               </div>
-              {isScrolled && (
-                <span className="font-bold text-lg bg-gradient-to-r from-primary to-blue-600 bg-clip-text text-transparent animate-in fade-in slide-in-from-left-2 duration-500">
-                  ZENO TEKK
-                </span>
-              )}
             </Link>
 
             {/* Desktop Menu */}
