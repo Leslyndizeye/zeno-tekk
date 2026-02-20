@@ -3,9 +3,9 @@
 import type React from "react"
 
 import { useEffect, useRef, useState } from "react"
-import { Users, Briefcase, Award, Clock } from "lucide-react"
+import { useStats } from "@/hooks/useApi"
 
-interface Stat {
+interface StatDisplay {
   icon: React.ElementType
   value: number
   suffix: string
@@ -13,12 +13,13 @@ interface Stat {
   prefix?: string
 }
 
-const stats: Stat[] = [
-  { icon: Briefcase, value: 50, suffix: "+", label: "Projects Delivered" },
-  { icon: Award, value: 99, suffix: "%", label: "Client Satisfaction" },
-  { icon: Users, value: 100, suffix: "+", label: "Happy Clients" },
-  { icon: Clock, value: 3, suffix: "+", label: "Years Experience" },
-]
+// Icon mapping for stat display
+const iconMap: { [key: string]: React.ElementType } = {
+  "50+": { Briefcase: true },
+  "99%": { Award: true },
+  "100+": { Users: true },
+  "3+": { Clock: true },
+}
 
 function CountUpAnimation({ end, suffix, prefix = "" }: { end: number; suffix: string; prefix?: string }) {
   const [count, setCount] = useState(0)
@@ -68,6 +69,36 @@ function CountUpAnimation({ end, suffix, prefix = "" }: { end: number; suffix: s
 }
 
 export function StatsCounter() {
+  const { stats, isLoading } = useStats()
+
+  const defaultStats = [
+    { label: "Projects Delivered", value: "50+" },
+    { label: "Client Satisfaction", value: "99%" },
+    { label: "Happy Clients", value: "100+" },
+    { label: "Years Experience", value: "3+" },
+  ]
+
+  const displayStats = stats.length > 0 ? stats : defaultStats
+
+  // Parse stats for display
+  const parsedStats: StatDisplay[] = displayStats.map((stat, index) => {
+    const numValue = parseInt(stat.value.replace(/[^0-9]/g, "")) || 0
+    const suffix = stat.value.replace(/[0-9]/g, "")
+    const icons = [{ Briefcase: true }, { Award: true }, { Users: true }, { Clock: true }]
+    const iconData = icons[index] || { Briefcase: true }
+    const iconName = Object.keys(iconData)[0]
+
+    const iconModule = require("lucide-react")
+    const Icon = iconModule[iconName] || iconModule.Briefcase
+
+    return {
+      icon: Icon,
+      value: numValue,
+      suffix: suffix || "+",
+      label: stat.label,
+    }
+  })
+
   return (
     <section className="py-20 md:py-32 border-y border-border bg-card/30 backdrop-blur-sm">
       <div className="container mx-auto px-6">
@@ -84,12 +115,12 @@ export function StatsCounter() {
         </div>
 
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 md:gap-12">
-          {stats.map((stat, index) => (
+          {parsedStats.map((stat, index) => (
             <div key={index} data-aos="zoom-in" data-aos-delay={index * 100} className="text-center space-y-4 group">
               <div className="w-16 h-16 md:w-20 md:h-20 mx-auto bg-primary/10 rounded-2xl flex items-center justify-center group-hover:bg-primary/20 transition-all duration-500 group-hover:scale-110">
                 <stat.icon className="w-8 h-8 md:w-10 md:h-10 text-primary" />
               </div>
-              <CountUpAnimation end={stat.value} suffix={stat.suffix} prefix={stat.prefix} />
+              <CountUpAnimation end={stat.value} suffix={stat.suffix} />
               <div className="text-sm md:text-base text-muted-foreground font-medium">{stat.label}</div>
             </div>
           ))}

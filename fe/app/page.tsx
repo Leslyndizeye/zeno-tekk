@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import {
@@ -25,7 +25,21 @@ import { UserFeedback } from "@/components/user-feedback"
 import { StatsCounter } from "@/components/stats-counter"
 import Link from "next/link"
 
+interface HeroContent {
+  title: string
+  subtitle: string
+  description: string
+  badge: string
+  ctaButton1Text: string
+  ctaButton1Url: string
+  ctaButton2Text: string
+  ctaButton2Url: string
+}
+
 export default function HomePage() {
+  const [heroContent, setHeroContent] = useState<HeroContent | null>(null)
+  const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api/v1"
+
   useEffect(() => {
     const initAOS = async () => {
       if (typeof window !== "undefined") {
@@ -39,7 +53,31 @@ export default function HomePage() {
       }
     }
     initAOS()
-  }, [])
+
+    // Fetch hero content
+    fetch(`${API_URL}/content/hero-content`)
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.success) {
+          setHeroContent(data.data)
+        }
+      })
+      .catch((err) => console.error("Failed to fetch hero content:", err))
+  }, [API_URL])
+
+  const defaultHeroContent: HeroContent = {
+    title: "Transform Ideas Into Innovative Software",
+    subtitle: "Innovative Software",
+    description:
+      "We create high-quality, scalable, and user-friendly software solutions that drive efficiency, productivity, and growth for businesses worldwide.",
+    badge: "Empowering Innovation",
+    ctaButton1Text: "Explore Services",
+    ctaButton1Url: "/services",
+    ctaButton2Text: "View Our Work",
+    ctaButton2Url: "/products",
+  }
+
+  const content = heroContent || defaultHeroContent
 
   return (
     <>
@@ -67,11 +105,16 @@ export default function HomePage() {
                 data-aos="fade-down"
                 className="inline-block px-4 py-2 bg-primary/10 rounded-full text-sm text-primary mb-6 transition-all duration-500 hover:bg-primary/20"
               >
-                Empowering Innovation
+                {content.badge}
               </div>
 
               <h1 data-aos="fade-up" className="text-4xl sm:text-5xl md:text-7xl font-bold leading-tight text-balance">
-                Transform Ideas Into <span className="text-primary">Innovative Software</span>
+                {content.title.split(content.subtitle).map((part, i, arr) => (
+                  <span key={i}>
+                    {part}
+                    {i < arr.length - 1 && <span className="text-primary">{content.subtitle}</span>}
+                  </span>
+                ))}
               </h1>
 
               <p
@@ -79,8 +122,7 @@ export default function HomePage() {
                 data-aos-delay="200"
                 className="text-lg sm:text-xl md:text-2xl text-muted-foreground max-w-2xl mx-auto text-pretty"
               >
-                We create high-quality, scalable, and user-friendly software solutions that drive efficiency,
-                productivity, and growth for businesses worldwide.
+                {content.description}
               </p>
 
               <div
@@ -88,19 +130,19 @@ export default function HomePage() {
                 data-aos-delay="400"
                 className="flex flex-col sm:flex-row gap-6 justify-center pt-4"
               >
-                <Link href="/services">
+                <Link href={content.ctaButton1Url}>
                   <Button size="lg" className="group transition-all duration-500 hover:scale-105 hover:shadow-lg">
-                    Explore Services
+                    {content.ctaButton1Text}
                     <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform duration-500" />
                   </Button>
                 </Link>
-                <Link href="/products">
+                <Link href={content.ctaButton2Url}>
                   <Button
                     size="lg"
                     variant="outline"
                     className="transition-all duration-500 hover:scale-105 hover:shadow-lg bg-transparent"
                   >
-                    View Our Work
+                    {content.ctaButton2Text}
                   </Button>
                 </Link>
               </div>
