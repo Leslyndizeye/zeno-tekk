@@ -25,7 +25,7 @@ const app = express();
 
 // Middleware
 app.use(cors({
-  origin: ['http://localhost:3000', 'http://localhost:3001', 'http://localhost:8000'],
+  origin: ['http://localhost:3000', 'http://localhost:3001', 'http://localhost:8000', 'https://www.zenotekk.com', 'https://zeno-tekk.onrender.com'],
   credentials: true // Enable CORS with credentials
 }));
 app.use(express.json());
