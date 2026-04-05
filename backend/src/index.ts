@@ -25,7 +25,7 @@ const app = express();
 
 // Middleware
 app.use(cors({
-  origin: ['http://localhost:3000', 'http://localhost:8000'],
+  origin: ['http://localhost:3000', 'http://localhost:3001', 'http://localhost:8000'],
   credentials: true // Enable CORS with credentials
 }));
 app.use(express.json());
@@ -55,6 +55,11 @@ app.use(
     },
   })
 );
+
+// Keep-alive health check (prevents Render free tier from idling)
+app.get("/health", (_req, res) => {
+  res.status(200).send("ok");
+});
 
 // Routes
 app.use("/api/v1", router);

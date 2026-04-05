@@ -2,6 +2,11 @@ import { Request, Response } from "express";
 import { AppDataSource } from "../config/db";
 import { HeroContent } from "../database/HeroContentModel";
 import { Stat } from "../database/StatsModel";
+import { logActivity } from "../middleware/ActivityLog";
+
+interface CustomRequest extends Request {
+  user?: { id: number; email: string };
+}
 
 const heroContentRepository = AppDataSource.getRepository(HeroContent);
 const statRepository = AppDataSource.getRepository(Stat);
@@ -21,7 +26,6 @@ export const getHeroContent = async (req: Request, res: Response) => {
         ctaButton1Url: "/services",
         ctaButton2Text: "View Our Work",
         ctaButton2Url: "/products",
-        badge: "Empowering Innovation",
       });
       await heroContentRepository.save(heroContent);
     }
@@ -32,9 +36,9 @@ export const getHeroContent = async (req: Request, res: Response) => {
   }
 };
 
-export const updateHeroContent = async (req: Request, res: Response) => {
+export const updateHeroContent = async (req: CustomRequest, res: Response) => {
   try {
-    const { title, subtitle, description, ctaButton1Text, ctaButton1Url, ctaButton2Text, ctaButton2Url, badge } =
+    const { title, subtitle, description, ctaButton1Text, ctaButton1Url, ctaButton2Text, ctaButton2Url } =
       req.body;
 
     let heroContent = await heroContentRepository.findOne({ where: { id: 1 } });
@@ -50,9 +54,17 @@ export const updateHeroContent = async (req: Request, res: Response) => {
     if (ctaButton1Url !== undefined) heroContent.ctaButton1Url = ctaButton1Url;
     if (ctaButton2Text !== undefined) heroContent.ctaButton2Text = ctaButton2Text;
     if (ctaButton2Url !== undefined) heroContent.ctaButton2Url = ctaButton2Url;
-    if (badge !== undefined) heroContent.badge = badge;
 
     await heroContentRepository.save(heroContent);
+
+    await logActivity({
+      userId: req.user?.id,
+      email: req.user?.email,
+      action: "Updated hero content",
+      targetType: "HeroContent",
+      details: `Updated hero content`,
+    });
+
     res.status(200).json({ success: true, data: heroContent });
   } catch (error: any) {
     res.status(500).json({ success: false, message: error.message });
@@ -83,7 +95,7 @@ export const getAllStats = async (req: Request, res: Response) => {
   }
 };
 
-export const createStat = async (req: Request, res: Response) => {
+export const createStat = async (req: CustomRequest, res: Response) => {
   try {
     const { label, value, description, order } = req.body;
 
@@ -102,13 +114,23 @@ export const createStat = async (req: Request, res: Response) => {
     });
 
     await statRepository.save(stat);
+
+    await logActivity({
+      userId: req.user?.id,
+      email: req.user?.email,
+      action: "Created stat",
+      targetId: stat.id.toString(),
+      targetType: "Stat",
+      details: `Created stat "${label}: ${value}"`,
+    });
+
     res.status(201).json({ success: true, data: stat });
   } catch (error: any) {
     res.status(500).json({ success: false, message: error.message });
   }
 };
 
-export const updateStat = async (req: Request, res: Response) => {
+export const updateStat = async (req: CustomRequest, res: Response) => {
   try {
     const { id } = req.params;
     const { label, value, description, isActive, order } = req.body;
@@ -126,13 +148,23 @@ export const updateStat = async (req: Request, res: Response) => {
     if (order !== undefined) stat.order = order;
 
     await statRepository.save(stat);
+
+    await logActivity({
+      userId: req.user?.id,
+      email: req.user?.email,
+      action: "Updated stat",
+      targetId: id,
+      targetType: "Stat",
+      details: `Updated stat "${stat.label}"`,
+    });
+
     res.status(200).json({ success: true, data: stat });
   } catch (error: any) {
     res.status(500).json({ success: false, message: error.message });
   }
 };
 
-export const deleteStat = async (req: Request, res: Response) => {
+export const deleteStat = async (req: CustomRequest, res: Response) => {
   try {
     const { id } = req.params;
 
@@ -141,6 +173,15 @@ export const deleteStat = async (req: Request, res: Response) => {
     if (!stat) {
       return res.status(404).json({ success: false, message: "Stat not found" });
     }
+
+    await logActivity({
+      userId: req.user?.id,
+      email: req.user?.email,
+      action: "Deleted stat",
+      targetId: id,
+      targetType: "Stat",
+      details: `Deleted stat "${stat.label}"`,
+    });
 
     await statRepository.remove(stat);
     res.status(200).json({ success: true, message: "Stat deleted successfully" });

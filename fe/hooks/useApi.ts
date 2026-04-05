@@ -140,6 +140,35 @@ export const useStats = () => {
   };
 };
 
+export interface BlogPost {
+  id: number;
+  title: string;
+  excerpt: string;
+  content: string;
+  author: string;
+  image: string;
+  category: string;
+  readTime: string;
+  isFeatured: boolean;
+  isActive: boolean;
+  order: number;
+  createdAt: string;
+}
+
+// Blog Posts
+export const useBlogPosts = () => {
+  const { data, error, isLoading, mutate } = useSWR<{ success: boolean; data: BlogPost[] }>(
+    `${API_URL}/content/blog`,
+    fetcher
+  );
+  return {
+    posts: data?.data || [],
+    isLoading,
+    error,
+    mutate,
+  };
+};
+
 // Hero Content
 export const useHeroContent = () => {
   const { data, error, isLoading, mutate } = useSWR<{ success: boolean; data: HeroContent }>(

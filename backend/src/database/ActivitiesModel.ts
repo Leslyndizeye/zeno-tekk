@@ -7,19 +7,22 @@ export class ActivityLog {
   id!: number;
 
   @ManyToOne(() => Users, { nullable: true, onDelete: "SET NULL" })
-  user!: Users | null; // Null if system-triggered
+  user!: Users | null;
+
+  @Column({ nullable: true })
+  email?: string; // Email of the actor, stored directly for audit trail
 
   @Column()
-  action!: string; // e.g. "Created Organization", "Deleted File"
+  action!: string; // e.g. "Created Product", "Deleted Service"
 
   @Column({ nullable: true })
-  targetId!: string; // ID of affected resource (file ID, folder ID, etc.)
+  targetId!: string; // ID of affected resource
 
   @Column({ nullable: true })
-  targetType!: string; // e.g. "File", "Users"
+  targetType!: string; // e.g. "Product", "Service", "Users"
 
   @Column({ type: "text", nullable: true })
-  details!: string; // Optional message or metadata (e.g. JSON.stringify())
+  details!: string; // Optional metadata
 
   @CreateDateColumn()
   createdAt!: Date;

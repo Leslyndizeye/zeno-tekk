@@ -1,6 +1,11 @@
 import { Request, Response } from "express";
 import { AppDataSource } from "../config/db";
 import { TeamMember } from "../database/TeamMemberModel";
+import { logActivity } from "../middleware/ActivityLog";
+
+interface CustomRequest extends Request {
+  user?: { id: number; email: string };
+}
 
 const teamMemberRepository = AppDataSource.getRepository(TeamMember);
 
@@ -27,7 +32,7 @@ export const getAllTeamMembers = async (req: Request, res: Response) => {
   }
 };
 
-export const createTeamMember = async (req: Request, res: Response) => {
+export const createTeamMember = async (req: CustomRequest, res: Response) => {
   try {
     const { name, position, bio, image, email, linkedin, twitter, order } = req.body;
 
@@ -50,13 +55,23 @@ export const createTeamMember = async (req: Request, res: Response) => {
     });
 
     await teamMemberRepository.save(member);
+
+    await logActivity({
+      userId: req.user?.id,
+      email: req.user?.email,
+      action: "Created team member",
+      targetId: member.id.toString(),
+      targetType: "TeamMember",
+      details: `Created team member "${name}"`,
+    });
+
     res.status(201).json({ success: true, data: member });
   } catch (error: any) {
     res.status(500).json({ success: false, message: error.message });
   }
 };
 
-export const updateTeamMember = async (req: Request, res: Response) => {
+export const updateTeamMember = async (req: CustomRequest, res: Response) => {
   try {
     const { id } = req.params;
     const { name, position, bio, image, email, linkedin, twitter, isActive, order } = req.body;
@@ -78,13 +93,23 @@ export const updateTeamMember = async (req: Request, res: Response) => {
     if (order !== undefined) member.order = order;
 
     await teamMemberRepository.save(member);
+
+    await logActivity({
+      userId: req.user?.id,
+      email: req.user?.email,
+      action: "Updated team member",
+      targetId: id,
+      targetType: "TeamMember",
+      details: `Updated team member "${member.name}"`,
+    });
+
     res.status(200).json({ success: true, data: member });
   } catch (error: any) {
     res.status(500).json({ success: false, message: error.message });
   }
 };
 
-export const deleteTeamMember = async (req: Request, res: Response) => {
+export const deleteTeamMember = async (req: CustomRequest, res: Response) => {
   try {
     const { id } = req.params;
 
@@ -93,6 +118,15 @@ export const deleteTeamMember = async (req: Request, res: Response) => {
     if (!member) {
       return res.status(404).json({ success: false, message: "Team member not found" });
     }
+
+    await logActivity({
+      userId: req.user?.id,
+      email: req.user?.email,
+      action: "Deleted team member",
+      targetId: id,
+      targetType: "TeamMember",
+      details: `Deleted team member "${member.name}"`,
+    });
 
     await teamMemberRepository.remove(member);
     res.status(200).json({ success: true, message: "Team member deleted successfully" });

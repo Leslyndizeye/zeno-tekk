@@ -1,6 +1,11 @@
 import { Request, Response } from "express";
 import { AppDataSource } from "../config/db";
 import { Service } from "../database/ServiceModel";
+import { logActivity } from "../middleware/ActivityLog";
+
+interface CustomRequest extends Request {
+  user?: { id: number; email: string };
+}
 
 const serviceRepository = AppDataSource.getRepository(Service);
 
@@ -27,7 +32,7 @@ export const getAllServices = async (req: Request, res: Response) => {
   }
 };
 
-export const createService = async (req: Request, res: Response) => {
+export const createService = async (req: CustomRequest, res: Response) => {
   try {
     const { title, description, icon, features, order } = req.body;
 
@@ -47,13 +52,23 @@ export const createService = async (req: Request, res: Response) => {
     });
 
     await serviceRepository.save(service);
+
+    await logActivity({
+      userId: req.user?.id,
+      email: req.user?.email,
+      action: "Created service",
+      targetId: service.id.toString(),
+      targetType: "Service",
+      details: `Created service "${title}"`,
+    });
+
     res.status(201).json({ success: true, data: service });
   } catch (error: any) {
     res.status(500).json({ success: false, message: error.message });
   }
 };
 
-export const updateService = async (req: Request, res: Response) => {
+export const updateService = async (req: CustomRequest, res: Response) => {
   try {
     const { id } = req.params;
     const { title, description, icon, features, isActive, order } = req.body;
@@ -72,13 +87,23 @@ export const updateService = async (req: Request, res: Response) => {
     if (order !== undefined) service.order = order;
 
     await serviceRepository.save(service);
+
+    await logActivity({
+      userId: req.user?.id,
+      email: req.user?.email,
+      action: "Updated service",
+      targetId: id,
+      targetType: "Service",
+      details: `Updated service "${service.title}"`,
+    });
+
     res.status(200).json({ success: true, data: service });
   } catch (error: any) {
     res.status(500).json({ success: false, message: error.message });
   }
 };
 
-export const deleteService = async (req: Request, res: Response) => {
+export const deleteService = async (req: CustomRequest, res: Response) => {
   try {
     const { id } = req.params;
 
@@ -87,6 +112,15 @@ export const deleteService = async (req: Request, res: Response) => {
     if (!service) {
       return res.status(404).json({ success: false, message: "Service not found" });
     }
+
+    await logActivity({
+      userId: req.user?.id,
+      email: req.user?.email,
+      action: "Deleted service",
+      targetId: id,
+      targetType: "Service",
+      details: `Deleted service "${service.title}"`,
+    });
 
     await serviceRepository.remove(service);
     res.status(200).json({ success: true, message: "Service deleted successfully" });

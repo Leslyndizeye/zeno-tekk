@@ -9,15 +9,13 @@ import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
+import { toast } from "sonner"
 import { Mail, Phone, MapPin, Clock, Send, MessageSquare, Users, Headphones } from "lucide-react"
 
 export default function ContactPage() {
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    subject: "",
-    message: "",
-  })
+  const [formData, setFormData] = useState({ name: "", email: "", subject: "", message: "" })
+  const [sending, setSending] = useState(false)
+  const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api/v1"
 
   useEffect(() => {
     const initAOS = async () => {
@@ -33,9 +31,27 @@ export default function ContactPage() {
     initAOS()
   }, [])
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    console.log("Form submitted:", formData)
+    setSending(true)
+    try {
+      const res = await fetch(`${API_URL}/content/contact`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      })
+      if (res.ok) {
+        toast.success("Message sent! We'll get back to you soon.")
+        setFormData({ name: "", email: "", subject: "", message: "" })
+      } else {
+        const err = await res.json()
+        toast.error(err.message || "Failed to send message")
+      }
+    } catch {
+      toast.error("Something went wrong. Please try again.")
+    } finally {
+      setSending(false)
+    }
   }
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -221,8 +237,8 @@ export default function ContactPage() {
                   />
                 </div>
 
-                <Button type="submit" size="lg" className="w-full group transition-all duration-500">
-                  Send Message
+                <Button type="submit" size="lg" className="w-full group transition-all duration-500" disabled={sending}>
+                  {sending ? "Sending..." : "Send Message"}
                   <Send className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform duration-500" />
                 </Button>
               </form>

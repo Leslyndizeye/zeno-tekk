@@ -1,6 +1,11 @@
 import { Request, Response } from "express";
 import { AppDataSource } from "../config/db";
 import { Product } from "../database/ProductModel";
+import { logActivity } from "../middleware/ActivityLog";
+
+interface CustomRequest extends Request {
+  user?: { id: number; email: string };
+}
 
 const productRepository = AppDataSource.getRepository(Product);
 
@@ -27,7 +32,7 @@ export const getAllProducts = async (req: Request, res: Response) => {
   }
 };
 
-export const createProduct = async (req: Request, res: Response) => {
+export const createProduct = async (req: CustomRequest, res: Response) => {
   try {
     const { title, description, category, image, url, order } = req.body;
 
@@ -48,13 +53,23 @@ export const createProduct = async (req: Request, res: Response) => {
     });
 
     await productRepository.save(product);
+
+    await logActivity({
+      userId: req.user?.id,
+      email: req.user?.email,
+      action: "Created product",
+      targetId: product.id.toString(),
+      targetType: "Product",
+      details: `Created product "${title}"`,
+    });
+
     res.status(201).json({ success: true, data: product });
   } catch (error: any) {
     res.status(500).json({ success: false, message: error.message });
   }
 };
 
-export const updateProduct = async (req: Request, res: Response) => {
+export const updateProduct = async (req: CustomRequest, res: Response) => {
   try {
     const { id } = req.params;
     const { title, description, category, image, url, isActive, order } = req.body;
@@ -74,13 +89,23 @@ export const updateProduct = async (req: Request, res: Response) => {
     if (order !== undefined) product.order = order;
 
     await productRepository.save(product);
+
+    await logActivity({
+      userId: req.user?.id,
+      email: req.user?.email,
+      action: "Updated product",
+      targetId: id,
+      targetType: "Product",
+      details: `Updated product "${product.title}"`,
+    });
+
     res.status(200).json({ success: true, data: product });
   } catch (error: any) {
     res.status(500).json({ success: false, message: error.message });
   }
 };
 
-export const deleteProduct = async (req: Request, res: Response) => {
+export const deleteProduct = async (req: CustomRequest, res: Response) => {
   try {
     const { id } = req.params;
 
@@ -89,6 +114,15 @@ export const deleteProduct = async (req: Request, res: Response) => {
     if (!product) {
       return res.status(404).json({ success: false, message: "Product not found" });
     }
+
+    await logActivity({
+      userId: req.user?.id,
+      email: req.user?.email,
+      action: "Deleted product",
+      targetId: id,
+      targetType: "Product",
+      details: `Deleted product "${product.title}"`,
+    });
 
     await productRepository.remove(product);
     res.status(200).json({ success: true, message: "Product deleted successfully" });

@@ -35,7 +35,6 @@ export const authenticateToken = async (req: CustomRequest, res: Response, next:
     const userRepo = AppDataSource.getRepository(Users);
     const user = await userRepo.findOne({
       where: { id: decoded.id },
-      relations: ['organization'], 
     });
 
     if (!user) {

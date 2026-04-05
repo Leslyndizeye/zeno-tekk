@@ -1,6 +1,11 @@
 import { Request, Response } from "express";
 import { AppDataSource } from "../config/db";
 import { Testimonial } from "../database/TestimonialModel";
+import { logActivity } from "../middleware/ActivityLog";
+
+interface CustomRequest extends Request {
+  user?: { id: number; email: string };
+}
 
 const testimonialRepository = AppDataSource.getRepository(Testimonial);
 
@@ -27,7 +32,7 @@ export const getAllTestimonials = async (req: Request, res: Response) => {
   }
 };
 
-export const createTestimonial = async (req: Request, res: Response) => {
+export const createTestimonial = async (req: CustomRequest, res: Response) => {
   try {
     const { clientName, clientCompany, content, clientImage, rating, order } = req.body;
 
@@ -48,13 +53,23 @@ export const createTestimonial = async (req: Request, res: Response) => {
     });
 
     await testimonialRepository.save(testimonial);
+
+    await logActivity({
+      userId: req.user?.id,
+      email: req.user?.email,
+      action: "Created testimonial",
+      targetId: testimonial.id.toString(),
+      targetType: "Testimonial",
+      details: `Created testimonial from "${clientName}" at "${clientCompany}"`,
+    });
+
     res.status(201).json({ success: true, data: testimonial });
   } catch (error: any) {
     res.status(500).json({ success: false, message: error.message });
   }
 };
 
-export const updateTestimonial = async (req: Request, res: Response) => {
+export const updateTestimonial = async (req: CustomRequest, res: Response) => {
   try {
     const { id } = req.params;
     const { clientName, clientCompany, content, clientImage, rating, isActive, order } = req.body;
@@ -74,13 +89,23 @@ export const updateTestimonial = async (req: Request, res: Response) => {
     if (order !== undefined) testimonial.order = order;
 
     await testimonialRepository.save(testimonial);
+
+    await logActivity({
+      userId: req.user?.id,
+      email: req.user?.email,
+      action: "Updated testimonial",
+      targetId: id,
+      targetType: "Testimonial",
+      details: `Updated testimonial from "${testimonial.clientName}"`,
+    });
+
     res.status(200).json({ success: true, data: testimonial });
   } catch (error: any) {
     res.status(500).json({ success: false, message: error.message });
   }
 };
 
-export const deleteTestimonial = async (req: Request, res: Response) => {
+export const deleteTestimonial = async (req: CustomRequest, res: Response) => {
   try {
     const { id } = req.params;
 
@@ -89,6 +114,15 @@ export const deleteTestimonial = async (req: Request, res: Response) => {
     if (!testimonial) {
       return res.status(404).json({ success: false, message: "Testimonial not found" });
     }
+
+    await logActivity({
+      userId: req.user?.id,
+      email: req.user?.email,
+      action: "Deleted testimonial",
+      targetId: id,
+      targetType: "Testimonial",
+      details: `Deleted testimonial from "${testimonial.clientName}"`,
+    });
 
     await testimonialRepository.remove(testimonial);
     res.status(200).json({ success: true, message: "Testimonial deleted successfully" });

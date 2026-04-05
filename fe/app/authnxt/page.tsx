@@ -14,9 +14,17 @@ export default function LoginPage() {
   const [password, setPassword] = useState("")
   const [signing, setSigning] = useState(false)
   const router = useRouter()
+
+  useEffect(() => {
+    const token = localStorage.getItem("token")
+    if (token) {
+      router.replace("/admin")
+    }
+  }, [router])
   
   // States for admin verification modal
   const [showAdminModal, setShowAdminModal] = useState(false)
+  const [showAccessModal, setShowAccessModal] = useState(true)
   const [adminPassword, setAdminPassword] = useState("")
   const [verifying, setVerifying] = useState(false)
   
@@ -83,7 +91,10 @@ export default function LoginPage() {
     if (adminPassword === "admin") {
       toast.success("Admin verified successfully!")
       setShowAdminModal(false)
-      setShowRegisterModal(true)
+      setShowAccessModal(false)
+      if (showAdminModal) {
+        setShowRegisterModal(true)
+      }
       setAdminPassword("")
     } else {
       toast.error("Incorrect admin password")
@@ -229,12 +240,19 @@ export default function LoginPage() {
                   </div>
                 </div>
 
+                {/* Forgot Password */}
+                <div className="flex justify-end -mt-2">
+                  <Link href="/forgot-password" className="text-sm text-primary hover:underline">
+                    Forgot password?
+                  </Link>
+                </div>
+
                 {/* Submit Button */}
                 <Button type="submit" className="w-full group cursor-pointer" size="lg" disabled={signing}>
                   {signing ? 'Signing in...' : 'Sign in'}
                   <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
                 </Button>
-                
+
                 {/* Register Link */}
                 <div className="pt-4 border-t border-border">
                   <p className="text-center text-sm text-muted-foreground">
@@ -268,7 +286,7 @@ export default function LoginPage() {
 
       {/* Admin Verification Modal */}
       {showAdminModal && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50 backdrop-blur-lg">
           <div className="bg-card border border-border rounded-lg shadow-2xl max-w-md w-full p-6" data-aos="zoom-in">
             <div className="flex justify-between items-center mb-6">
               <h2 className="text-2xl font-bold">Admin Verification</h2>
@@ -325,6 +343,46 @@ export default function LoginPage() {
           </div>
         </div>
       )}
+
+      {showAccessModal && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50 backdrop-blur-lg">
+          <div className="bg-card border border-border rounded-lg shadow-2xl max-w-md w-full p-6" data-aos="zoom-in">
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="text-2xl font-bold">Admin Verification</h2>
+            </div>
+            
+            <form onSubmit={handleAdminVerification} className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium mb-2">
+                  Admin Password
+                </label>
+                <div className="relative">
+                  <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+                  <input
+                    type="password"
+                    value={adminPassword}
+                    onChange={(e) => setAdminPassword(e.target.value)}
+                    placeholder="Enter admin password"
+                    className="w-full pl-10 pr-4 py-3 bg-background border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary transition-all"
+                    required
+                    autoFocus
+                  />
+                </div>
+                <p className="text-xs text-muted-foreground mt-2">
+                  Please enter the admin password to access login page.
+                </p>
+              </div>
+              
+              <div className="flex gap-3 pt-2">
+                <Button type="submit" className="flex-1 cursor-pointer" disabled={verifying}>
+                  {verifying ? "Verifying..." : "Verify"}
+                </Button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
 
       {/* Registration Modal */}
       {showRegisterModal && (

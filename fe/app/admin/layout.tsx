@@ -1,8 +1,8 @@
-import React from "react"
+import React from "react";
 import type { Metadata } from "next";
 import { AdminSidebar } from "@/components/admin/sidebar";
 import { AdminHeader } from "@/components/admin/header";
-import "@/app/globals.css";
+import { AuthGuard } from "@/components/admin/auth-guard";
 
 export const metadata: Metadata = {
   title: "Admin Dashboard",
@@ -15,18 +15,14 @@ export default function AdminLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" suppressHydrationWarning>
-      <body className="bg-background text-foreground">
-        <div className="flex h-screen bg-background">
-          <AdminSidebar />
-          <div className="flex-1 flex flex-col overflow-hidden">
-            <AdminHeader />
-            <main className="flex-1 overflow-auto p-6">
-              {children}
-            </main>
-          </div>
+    <AuthGuard>
+      <div className="flex h-screen bg-background">
+        <AdminSidebar />
+        <div className="flex-1 flex flex-col overflow-hidden">
+          <AdminHeader />
+          <main className="flex-1 overflow-auto p-6">{children}</main>
         </div>
-      </body>
-    </html>
+      </div>
+    </AuthGuard>
   );
 }

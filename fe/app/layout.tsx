@@ -3,6 +3,7 @@ import type { Metadata } from "next"
 import { Geist, Geist_Mono } from "next/font/google"
 import { ThemeProvider } from "@/components/theme-provider"
 import { PageTransition } from "@/components/page-transition"
+import { AnalyticsTracker } from "@/components/analytics-tracker"
 import "./globals.css"
 import { Toaster } from "sonner"
 
@@ -13,6 +14,10 @@ export const metadata: Metadata = {
   title: "ZENO TEKK - Innovative Software Solutions",
   description: "Transform ideas into innovative software. Custom development, AI solutions, and modern applications.",
   generator: "v0.app",
+  icons: {
+    icon: "/logo-icon.png",
+    apple: "/logo-icon.png",
+  },
 }
 
 export default function RootLayout({
@@ -28,6 +33,7 @@ export default function RootLayout({
       <body className={`font-sans antialiased`}>
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem disableTransitionOnChange>
           <PageTransition />
+          <AnalyticsTracker />
           {children}
         <Toaster richColors position="top-right" />
         </ThemeProvider>

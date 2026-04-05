@@ -26,9 +26,6 @@ export class HeroContent {
   @Column({ default: "/products" })
   ctaButton2Url!: string;
 
-  @Column({ type: "text", default: "Empowering Innovation" })
-  badge!: string;
-
   @CreateDateColumn()
   createdAt!: Date;
 
