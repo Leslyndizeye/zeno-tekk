@@ -46,7 +46,7 @@ interface HeroContent {
 
 export default function HomePage() {
   const [heroContent, setHeroContent] = useState<HeroContent | null>(null)
-  const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api/v1"
+  const API_URL = process.env.NEXT_PUBLIC_API_URL
   const { teamMembers } = useTeamMembers()
   const [contactForm, setContactForm] = useState({ name: "", email: "", subject: "", message: "" })
   const [isSubmitting, setIsSubmitting] = useState(false)

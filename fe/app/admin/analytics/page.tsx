@@ -28,7 +28,7 @@ import {
 
 import { getAuthHeaders } from "@/lib/auth"
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api/v1"
+const API_URL = process.env.NEXT_PUBLIC_API_URL
 const fetcher = (url: string) => fetch(url, { headers: getAuthHeaders() }).then((r) => r.json())
 
 interface DailyView {

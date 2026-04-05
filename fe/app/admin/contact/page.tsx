@@ -23,7 +23,7 @@ const fetcher = (url: string) => {
     headers: token ? { Authorization: `Bearer ${token}` } : {},
   }).then((r) => r.json())
 }
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api/v1";
+const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 export default function ContactPage() {
   const { data, mutate, isLoading } = useSWR<{ success: boolean; data: ContactMessage[] }>(

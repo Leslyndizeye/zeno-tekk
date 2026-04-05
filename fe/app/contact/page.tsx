@@ -15,7 +15,7 @@ import { Mail, Phone, MapPin, Clock, Send, MessageSquare, Users, Headphones } fr
 export default function ContactPage() {
   const [formData, setFormData] = useState({ name: "", email: "", subject: "", message: "" })
   const [sending, setSending] = useState(false)
-  const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api/v1"
+  const API_URL = process.env.NEXT_PUBLIC_API_URL
 
   useEffect(() => {
     const initAOS = async () => {

@@ -59,7 +59,7 @@ interface DecodedUser {
   profilePicture?: string;
 }
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api/v1";
+const API_URL = process.env.NEXT_PUBLIC_API_URL;
 const fetcher = (url: string) => {
   const token = typeof window !== "undefined" ? localStorage.getItem("token") : null
   return fetch(url, {
