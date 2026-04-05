@@ -62,7 +62,7 @@ app.get("/health", (_req, res) => {
 });
 
 // Routes
-app.use("/api/v1", router);
+app.use("/z1", router);
 
 // Multer errors
 app.use((err: any, req: any, res: any, next: any) => {
