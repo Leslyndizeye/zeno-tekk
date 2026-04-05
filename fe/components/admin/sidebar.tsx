@@ -59,7 +59,7 @@ export function AdminSidebar() {
       {/* Logo */}
       <div className="p-6 border-b border-border">
         <Link href="/admin" className="text-2xl font-bold text-primary">
-          ZENO TEKK
+          <img src="/logo.png" alt="" className="w-42" />
         </Link>
         <p className="text-xs text-muted-foreground mt-1">Admin Portal</p>
       </div>
