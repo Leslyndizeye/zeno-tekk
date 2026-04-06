@@ -551,7 +551,7 @@ export default function HomePage() {
         {/* CTA Section */}
         <section className="py-32 sm:py-40" data-aos="fade-up">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-            <Card className="p-12 sm:p-16 md:p-20 text-center bg-gradient-to-br from-primary/10 to-accent/10 border-primary/20 transition-all duration-700 hover:shadow-2xl">
+            <Card className="p-12 sm:p-16 md:p-20 text-center bg-linear-to-br from-primary/10 to-accent/10 border-primary/20 transition-all duration-700 hover:shadow-2xl">
               <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-8 text-balance">
                 Ready to Build Something Amazing?
               </h2>

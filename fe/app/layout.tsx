@@ -39,7 +39,7 @@ export default function RootLayout({
               url: "https://zenotekk.com",
               logo: "https://zenotekk.com/logo.png",
               description:
-                "Zenotekk is a software development company specializing in web and mobile applications.",
+                "Zenotekk is a software development company specializing in web, mobile and AI applications.",
               sameAs: [
                 "https://linkedin.com/company/zenotekk",
                 "https://instagram.com/zenotekk",
