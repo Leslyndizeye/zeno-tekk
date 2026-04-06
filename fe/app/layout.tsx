@@ -29,6 +29,24 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <head>
         <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "Organization",
+              name: "Zenotekk",
+              url: "https://zenotekk.com",
+              logo: "https://zenotekk.com/logo.png",
+              description:
+                "Zenotekk is a software development company specializing in web and mobile applications.",
+              sameAs: [
+                "https://linkedin.com/company/zenotekk",
+                "https://instagram.com/zenotekk",
+              ],
+            }),
+          }}
+        />
       </head>
       <body className={`font-sans antialiased`}>
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem disableTransitionOnChange>
