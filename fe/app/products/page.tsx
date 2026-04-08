@@ -10,6 +10,8 @@ import { Card } from "@/components/ui/card"
 import { Footer } from "@/components/footer"
 import { Navbar } from "@/components/navbar"
 import { useProducts, type Product } from "@/hooks/useApi"
+import { useCardsReady } from "@/hooks/useCardsReady"
+import { ProductCardSkeleton } from "@/components/ui/card-skeleton"
 
 interface ShowcaseProduct extends Product {
   productType: string
@@ -259,8 +261,9 @@ function ProjectCard({ project, delay }: { project: ShowcaseProduct; delay: numb
 
 export default function ProductsPage() {
   const { products, isLoading, error } = useProducts()
+  const cardsReady = useCardsReady(2000)
   const displayProducts = products.length > 0 ? buildShowcaseProducts(products) : defaultProducts
-  const showSkeleton = isLoading && !error && products.length === 0
+  const showSkeleton = isLoading || !cardsReady
 
   useEffect(() => {
     const initAOS = async () => {
@@ -305,16 +308,8 @@ export default function ProductsPage() {
         <div className="container mx-auto px-6">
           {showSkeleton ? (
             <div className="grid gap-8 md:grid-cols-2 xl:grid-cols-3">
-              {[...Array(6)].map((_, index) => (
-                <Card key={index} className="overflow-hidden p-0 animate-pulse">
-                  <div className="h-60 bg-muted" />
-                  <div className="space-y-4 p-6">
-                    <div className="h-4 w-1/4 rounded bg-muted" />
-                    <div className="h-7 w-2/3 rounded bg-muted" />
-                    <div className="h-4 rounded bg-muted" />
-                    <div className="h-4 w-4/5 rounded bg-muted" />
-                  </div>
-                </Card>
+              {Array.from({ length: 6 }).map((_, i) => (
+                <ProductCardSkeleton key={i} />
               ))}
             </div>
           ) : displayProducts.length === 0 ? (

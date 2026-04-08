@@ -14,10 +14,13 @@ import { motion } from "framer-motion"
 import { toast } from "sonner"
 import { Mail, Phone, MapPin, Clock, Send, MessageSquare, Users, Headphones, Plus, Minus, HelpCircle, ArrowUpRight, Twitter, Github, Linkedin, MessageCircle } from "lucide-react"
 import Link from "next/link"
+import { useCardsReady } from "@/hooks/useCardsReady"
+import { ContactCardSkeleton } from "@/components/ui/card-skeleton"
 
 export default function ContactPage() {
   const [formData, setFormData] = useState({ name: "", email: "", subject: "", message: "" })
   const [sending, setSending] = useState(false)
+  const cardsReady = useCardsReady(2000)
   const API_URL = process.env.NEXT_PUBLIC_API_URL
 
   useEffect(() => {
@@ -98,41 +101,45 @@ export default function ContactPage() {
       <section id="get-in-touch" className="py-16 bg-white dark:bg-black">
         <div className="container mx-auto px-6">
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 mb-20">
-            {[
-              { icon: Mail,  label: "Email Us",      value: "info@zenotekk.com",    desc: "Drop us a line anytime — we read every message." },
-              { icon: Phone, label: "Call Us",        value: "+250 788 123 456",     desc: "Available 24/7 — always someone on the line." },
-              { icon: MapPin,label: "Visit Us",       value: "Kigali, Rwanda",       desc: "KG 7 Ave, Kigali Heights." },
-              { icon: Clock, label: "Always On",      value: "24 / 7",               desc: "We work around the clock, every day of the year." },
-            ].map((item, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.1, duration: 0.6, ease: "easeOut" }}
-                className="h-full"
-              >
-                <Card className="relative p-0 border-border/40 bg-muted/5 hover:bg-muted/10 overflow-hidden group h-full"
-                  style={{ transition: "box-shadow 0.8s ease, background 0.8s ease" }}
+            {!cardsReady ? (
+              Array.from({ length: 4 }).map((_, i) => <ContactCardSkeleton key={i} />)
+            ) : (
+              [
+                { icon: Mail,  label: "Email Us",      value: "info@zenotekk.com",    desc: "Drop us a line anytime — we read every message." },
+                { icon: Phone, label: "Call Us",        value: "+250 788 123 456",     desc: "Available 24/7 — always someone on the line." },
+                { icon: MapPin,label: "Visit Us",       value: "Kigali, Rwanda",       desc: "KG 7 Ave, Kigali Heights." },
+                { icon: Clock, label: "Always On",      value: "24 / 7",               desc: "We work around the clock, every day of the year." },
+              ].map((item, index) => (
+                <motion.div
+                  key={index}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: index * 0.1, duration: 0.6, ease: "easeOut" }}
+                  className="h-full"
                 >
-                  <CardContent className="p-8">
-                    <div className="absolute top-0 right-0 w-24 h-24 bg-primary/5 rounded-full blur-2xl -mr-12 -mt-12 transition-all duration-[900ms] group-hover:bg-primary/15" />
+                  <Card className="relative p-0 border-border/40 bg-muted/5 hover:bg-muted/10 overflow-hidden group h-full"
+                    style={{ transition: "box-shadow 0.8s ease, background 0.8s ease" }}
+                  >
+                    <CardContent className="p-8">
+                      <div className="absolute top-0 right-0 w-24 h-24 bg-primary/5 rounded-full blur-2xl -mr-12 -mt-12 transition-all duration-[900ms] group-hover:bg-primary/15" />
 
-                    <div className="flex items-center gap-4 mb-6">
-                      <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center"
-                        style={{ transition: "transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1), background 0.6s ease" }}
-                      >
-                        <item.icon className="w-5 h-5 text-primary" style={{ transition: "transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1)" }} />
+                      <div className="flex items-center gap-4 mb-6">
+                        <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center"
+                          style={{ transition: "transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1), background 0.6s ease" }}
+                        >
+                          <item.icon className="w-5 h-5 text-primary" style={{ transition: "transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1)" }} />
+                        </div>
+                        <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">{item.label}</span>
                       </div>
-                      <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">{item.label}</span>
-                    </div>
 
-                    <h3 className="text-2xl font-black mb-2 tracking-tight">{item.value}</h3>
-                    <p className="text-sm text-muted-foreground leading-relaxed">{item.desc}</p>
-                  </CardContent>
-                </Card>
-              </motion.div>
-            ))}
+                      <h3 className="text-2xl font-black mb-2 tracking-tight">{item.value}</h3>
+                      <p className="text-sm text-muted-foreground leading-relaxed">{item.desc}</p>
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              ))
+            )}
           </div>
         </div>
       </section>

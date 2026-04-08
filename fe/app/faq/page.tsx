@@ -1,6 +1,8 @@
 "use client"
 
 import { useEffect, useMemo, useState } from "react"
+import { useCardsReady } from "@/hooks/useCardsReady"
+import { FAQSkeleton } from "@/components/ui/card-skeleton"
 import { motion } from "framer-motion"
 import { HelpCircle, Search } from "lucide-react"
 
@@ -108,6 +110,7 @@ const categories = [
 
 export default function FAQPage() {
   const [search, setSearch] = useState("")
+  const cardsReady = useCardsReady(2000)
 
   useEffect(() => {
     const initAOS = async () => {
@@ -179,7 +182,9 @@ export default function FAQPage() {
           </div>
 
           <div className="space-y-4">
-            {filteredFaqs.length > 0 ? (
+            {!cardsReady ? (
+              Array.from({ length: 6 }).map((_, i) => <FAQSkeleton key={i} />)
+            ) : filteredFaqs.length > 0 ? (
               <Accordion type="single" collapsible className="space-y-4">
                 {filteredFaqs.map((faq, index) => (
                   <AccordionItem

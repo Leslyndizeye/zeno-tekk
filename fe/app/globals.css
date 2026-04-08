@@ -7,6 +7,10 @@ html {
   font-size: 90%;
 }
 
+@keyframes shimmer {
+  100% { transform: translateX(100%); }
+}
+
 :root {
   /* Updated color palette - removed green, enhanced blues and purples */
   --background: oklch(0.12 0 0);

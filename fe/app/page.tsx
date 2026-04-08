@@ -35,6 +35,7 @@ import { UserFeedback } from "@/components/user-feedback"
 import { StatsCounter } from "@/components/stats-counter"
 import { useTeamMembers } from "@/hooks/useApi"
 import { PlasmaHero } from "@/components/home/plasma-hero"
+import { FoundationCardSkeleton, FeatureCardSkeleton, ServiceCardSkeleton } from "@/components/ui/card-skeleton"
 import Link from "next/link"
 
 interface HeroContent {
@@ -50,6 +51,7 @@ interface HeroContent {
 
 export default function HomePage() {
   const [heroContent, setHeroContent] = useState<HeroContent | null>(null)
+  const [cardsReady, setCardsReady] = useState(false)
   const API_URL = process.env.NEXT_PUBLIC_API_URL
   const { teamMembers } = useTeamMembers()
   const [contactForm, setContactForm] = useState({ name: "", email: "", subject: "", message: "" })
@@ -90,6 +92,8 @@ export default function HomePage() {
     }
     initAOS()
 
+    const cardTimer = setTimeout(() => setCardsReady(true), 2000)
+
     // Fetch hero content
     fetch(`${API_URL}/content/hero-content`)
       .then((res) => res.json())
@@ -99,6 +103,8 @@ export default function HomePage() {
         }
       })
       .catch((err) => console.error("Failed to fetch hero content:", err))
+
+    return () => clearTimeout(cardTimer)
   }, [API_URL])
 
   const defaultHeroContent: HeroContent = {
@@ -149,55 +155,41 @@ export default function HomePage() {
         <section id="foundation" className="py-16 sm:py-24 bg-white dark:bg-black">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
             <div className="max-w-3xl mx-auto text-center mb-12" data-aos="fade-up">
-              <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-8 text-balance">Our Foundation</h2>
+              <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-4 sm:mb-6 text-balance">Our Foundation</h2>
               <p className="text-lg sm:text-xl text-muted-foreground text-pretty">
                 Built on principles of innovation, excellence, and client success.
               </p>
             </div>
 
             <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
-              {[
-                {
-                  icon: Target,
-                  title: "Our Mission",
-                  description:
-                    "To empower businesses with innovative software solutions that drive growth, efficiency, and digital transformation in an ever-evolving technological landscape.",
-                },
-                {
-                  icon: Eye,
-                  title: "Our Vision",
-                  description:
-                    "To become a global leader in software development, recognized for delivering cutting-edge solutions that shape the future of technology and business innovation.",
-                },
-                {
-                  icon: Heart,
-                  title: "Our Values",
-                  description:
-                    "Excellence, integrity, innovation, and client success. We believe in building lasting partnerships through transparency, quality, and continuous improvement.",
-                },
-              ].map((item, index) => (
-                <Card
-                  key={item.title}
-                  data-aos="fade-up"
-                  data-aos-delay={(index + 1) * 100}
-                  className="group relative h-full overflow-hidden border-border/40 bg-muted/5 p-0 transition-all duration-500 hover:-translate-y-1 hover:bg-muted/10"
-                >
-                  <div className="absolute -right-12 -top-12 h-24 w-24 rounded-full bg-primary/5 blur-2xl transition-all duration-500 group-hover:bg-primary/10" />
-                  <div className="relative flex h-full flex-col p-8">
-                    <div className="mb-6 flex items-center gap-4">
-                      <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 transition-transform duration-500 group-hover:scale-110">
-                        <item.icon className="h-5 w-5 text-primary" />
+              {!cardsReady ? (
+                Array.from({ length: 3 }).map((_, i) => <FoundationCardSkeleton key={i} />)
+              ) : (
+                [
+                  { icon: Target, title: "Our Mission", description: "To empower businesses with innovative software solutions that drive growth, efficiency, and digital transformation in an ever-evolving technological landscape." },
+                  { icon: Eye,    title: "Our Vision",  description: "To become a global leader in software development, recognized for delivering cutting-edge solutions that shape the future of technology and business innovation." },
+                  { icon: Heart,  title: "Our Values",  description: "Excellence, integrity, innovation, and client success. We believe in building lasting partnerships through transparency, quality, and continuous improvement." },
+                ].map((item, index) => (
+                  <Card
+                    key={item.title}
+                    data-aos="fade-up"
+                    data-aos-delay={(index + 1) * 100}
+                    className="group relative h-full overflow-hidden border-border/40 bg-muted/5 p-0 transition-all duration-500 hover:-translate-y-1 hover:bg-muted/10"
+                  >
+                    <div className="absolute -right-12 -top-12 h-24 w-24 rounded-full bg-primary/5 blur-2xl transition-all duration-500 group-hover:bg-primary/10" />
+                    <div className="relative flex h-full flex-col p-8">
+                      <div className="mb-6 flex items-center gap-4">
+                        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 transition-transform duration-500 group-hover:scale-110">
+                          <item.icon className="h-5 w-5 text-primary" />
+                        </div>
+                        <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">{item.title}</span>
                       </div>
-                      <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">
-                        {item.title}
-                      </span>
+                      <h3 className="mb-3 text-2xl font-black tracking-tight">{item.title}</h3>
+                      <p className="text-muted-foreground text-pretty leading-relaxed">{item.description}</p>
                     </div>
-
-                    <h3 className="mb-3 text-2xl font-black tracking-tight">{item.title}</h3>
-                    <p className="text-muted-foreground text-pretty leading-relaxed">{item.description}</p>
-                  </div>
-                </Card>
-              ))}
+                  </Card>
+                ))
+              )}
             </div>
           </div>
         </section>
@@ -225,64 +217,40 @@ export default function HomePage() {
               </p>
             </div>
 
-            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-10">
-              {[
-                {
-                  icon: Rocket,
-                  title: "Fast Delivery",
-                  desc: "Agile methodology ensures rapid development cycles without ever compromising on quality.",
-                  code: `zenotekk.deploy({
-  target: "production",
-  strategy: "zero-downtime",
-  // shipped in record time
-});`,
-                },
-                {
-                  icon: Users,
-                  title: "Expert Team",
-                  desc: "Seasoned engineers with deep expertise across the full modern technology stack.",
-                  code: `const team = zenotekk.squad({
-  roles: ["fullstack", "devops",
-          "ai", "design"],
-  // senior-level by default
-});`,
-                },
-                {
-                  icon: ShieldCheck,
-                  title: "Quality Assurance",
-                  desc: "Rigorous testing and code reviews guarantee robust, battle-tested solutions.",
-                  code: `npm run test:coverage
-// ✓ 98 tests passed
-// ✓ 100% coverage
-// ✓ zero regressions`,
-                },
-              ].map((feature, index) => (
-                <div key={index} data-aos="fade-up" data-aos-delay={index * 100}>
-                  <Card className="flex flex-col h-full bg-card border border-border rounded-[2.5rem] overflow-hidden shadow-sm hover:shadow-2xl transition-all duration-500 hover:border-primary/30 group p-0">
-                    <div className="p-10 pb-6 flex items-start gap-4">
-                      <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center text-primary shrink-0 group-hover:bg-primary group-hover:text-white transition-all duration-500">
-                        <feature.icon className="w-6 h-6" />
-                      </div>
-                      <div>
-                        <h3 className="text-xl font-black tracking-tight mb-2 text-foreground">{feature.title}</h3>
-                        <p className="text-muted-foreground text-sm italic leading-relaxed">
-                          &ldquo;{feature.desc}&rdquo;
-                        </p>
-                      </div>
-                    </div>
-                    <div className="mt-auto p-4 pt-0">
-                      <div className="bg-zinc-100 dark:bg-zinc-950 rounded-3xl p-6 font-mono text-[11px] text-zinc-500 dark:text-zinc-400 overflow-hidden relative group-hover:bg-zinc-200 dark:group-hover:bg-black transition-colors duration-500">
-                        <div className="absolute top-4 right-4 flex gap-1.5 opacity-30">
-                          <div className="w-2 h-2 rounded-full bg-red-500" />
-                          <div className="w-2 h-2 rounded-full bg-amber-500" />
-                          <div className="w-2 h-2 rounded-full bg-emerald-500" />
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 lg:gap-10">
+              {!cardsReady ? (
+                Array.from({ length: 3 }).map((_, i) => <FeatureCardSkeleton key={i} />)
+              ) : (
+                [
+                  { icon: Rocket, title: "Fast Delivery", desc: "Agile methodology ensures rapid development cycles without ever compromising on quality.", code: `zenotekk.deploy({\n  target: "production",\n  strategy: "zero-downtime",\n  // shipped in record time\n});` },
+                  { icon: Users, title: "Expert Team", desc: "Seasoned engineers with deep expertise across the full modern technology stack.", code: `const team = zenotekk.squad({\n  roles: ["fullstack", "devops",\n          "ai", "design"],\n  // senior-level by default\n});` },
+                  { icon: ShieldCheck, title: "Quality Assurance", desc: "Rigorous testing and code reviews guarantee robust, battle-tested solutions.", code: `npm run test:coverage\n// ✓ 98 tests passed\n// ✓ 100% coverage\n// ✓ zero regressions` },
+                ].map((feature, index) => (
+                  <div key={index} data-aos="fade-up" data-aos-delay={index * 100}>
+                    <Card className="flex flex-col h-full bg-card border border-border rounded-4xl sm:rounded-[2.5rem] overflow-hidden shadow-sm hover:shadow-2xl transition-all duration-500 hover:border-primary/30 group p-0">
+                      <div className="p-6 sm:p-10 pb-4 sm:pb-6 flex items-start gap-3 sm:gap-4">
+                        <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center text-primary shrink-0 group-hover:bg-primary group-hover:text-white transition-all duration-500">
+                          <feature.icon className="w-6 h-6" />
                         </div>
-                        <pre className="overflow-x-auto"><code>{feature.code}</code></pre>
+                        <div>
+                          <h3 className="text-xl font-black tracking-tight mb-2 text-foreground">{feature.title}</h3>
+                          <p className="text-muted-foreground text-sm italic leading-relaxed">&ldquo;{feature.desc}&rdquo;</p>
+                        </div>
                       </div>
-                    </div>
-                  </Card>
-                </div>
-              ))}
+                      <div className="mt-auto p-4 pt-0">
+                        <div className="bg-zinc-100 dark:bg-zinc-950 rounded-3xl p-6 font-mono text-[11px] text-zinc-500 dark:text-zinc-400 overflow-hidden relative group-hover:bg-zinc-200 dark:group-hover:bg-black transition-colors duration-500">
+                          <div className="absolute top-4 right-4 flex gap-1.5 opacity-30">
+                            <div className="w-2 h-2 rounded-full bg-red-500" />
+                            <div className="w-2 h-2 rounded-full bg-amber-500" />
+                            <div className="w-2 h-2 rounded-full bg-emerald-500" />
+                          </div>
+                          <pre className="overflow-x-auto"><code>{feature.code}</code></pre>
+                        </div>
+                      </div>
+                    </Card>
+                  </div>
+                ))
+              )}
             </div>
           </div>
         </section>
@@ -292,8 +260,8 @@ export default function HomePage() {
         {/* Services Preview */}
         <section id="services" className="py-16 sm:py-24 bg-background dark:bg-black">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="max-w-3xl mb-12" data-aos="fade-up">
-              <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-8 text-balance text-foreground">
+            <div className="max-w-3xl mb-10 sm:mb-12" data-aos="fade-up">
+              <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-4 sm:mb-6 text-balance text-foreground">
                 Comprehensive Software Solutions
               </h2>
               <p className="text-lg sm:text-xl text-muted-foreground text-pretty">
@@ -302,7 +270,10 @@ export default function HomePage() {
             </div>
 
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
-              {[
+              {!cardsReady ? (
+                Array.from({ length: 6 }).map((_, i) => <ServiceCardSkeleton key={i} />)
+              ) : (
+              [
                 { icon: Code2,     title: "Custom Software",       desc: "Tailored applications built with modern technologies to fit your exact needs." },
                 { icon: Smartphone,title: "Web & Mobile Apps",     desc: "Interactive and responsive applications for all platforms and screen sizes." },
                 { icon: Brain,     title: "AI & Machine Learning", desc: "Smart software for automation, prediction, and intelligent decisions." },
@@ -315,7 +286,7 @@ export default function HomePage() {
                   href="/services"
                   data-aos="fade-up"
                   data-aos-delay={index * 80}
-                  className="group relative flex flex-col gap-5 rounded-3xl border border-border p-7 overflow-hidden cursor-pointer h-52 bg-card hover:border-primary/40 hover:shadow-[0_8px_40px_rgba(0,0,0,0.12)] dark:hover:shadow-[0_8px_40px_rgba(0,0,0,0.5)]"
+                  className="group relative flex flex-col gap-4 rounded-2xl sm:rounded-3xl border border-border p-5 sm:p-7 overflow-hidden cursor-pointer h-auto sm:h-52 bg-card hover:border-primary/40 hover:shadow-[0_8px_40px_rgba(0,0,0,0.12)] dark:hover:shadow-[0_8px_40px_rgba(0,0,0,0.5)]"
                   style={{
                     transition: "border-color 0.7s ease, box-shadow 0.7s ease",
                   }}
@@ -342,10 +313,11 @@ export default function HomePage() {
                   {/* animated bottom line */}
                   <div className="absolute bottom-0 left-0 h-px w-0 bg-linear-to-r from-primary to-primary/20 group-hover:w-full" style={{ transition: "width 0.7s cubic-bezier(0.34, 1.56, 0.64, 1)" }} />
                 </Link>
-              ))}
+              ))
+              )}
             </div>
 
-            <div className="text-center mt-16" data-aos="fade-up">
+            <div className="text-center mt-8 sm:mt-12" data-aos="fade-up">
               <Link href="/services">
                 <Button
                   size="lg"

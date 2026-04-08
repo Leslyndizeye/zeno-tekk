@@ -67,7 +67,7 @@ export function PlasmaHero({
         />
         
 
-        <div className="relative z-10 flex min-h-screen items-center justify-center px-6 pb-20 pt-36 sm:px-10 sm:pt-40 lg:px-16">
+        <div className="relative z-10 flex min-h-screen items-center justify-center px-4 pb-16 pt-28 sm:px-10 sm:pt-40 lg:px-16">
           <div className="mx-auto flex max-w-4xl flex-col items-center text-center">
             {/* <div
               data-aos="fade-up"
@@ -80,7 +80,7 @@ export function PlasmaHero({
             <h1
               // data-aos="fade-up"
               // data-aos-delay="150"
-              className="mb-10 max-w-4xl text-balance text-4xl font-semibold leading-[0.96] tracking-[-0.05em] text-white sm:text-6xl md:text-7xl lg:text-[5.4rem]"
+              className="mb-6 sm:mb-10 max-w-4xl text-balance text-3xl font-semibold leading-[1.05] sm:leading-[0.96] tracking-[-0.03em] sm:tracking-[-0.05em] text-white sm:text-5xl md:text-6xl lg:text-[5.4rem]"
             >
               {titleParts.highlight ? (
                 <>
@@ -100,7 +100,7 @@ export function PlasmaHero({
             <p
               // data-aos="fade-up"
               // data-aos-delay="300"
-              className="mb-10 max-w-2xl text-pretty text-base leading-7 text-white/72 sm:text-lg sm:leading-8"
+              className="mb-8 sm:mb-10 max-w-2xl text-pretty text-sm leading-6 text-white/72 sm:text-base sm:leading-7 md:text-lg md:leading-8 px-2 sm:px-0"
             >
               {description}
             </p>
@@ -113,7 +113,7 @@ export function PlasmaHero({
               <Button
                 asChild
                 size="lg"
-                className="h-14 rounded-full bg-primary px-8 text-sm font-semibold text-primary-foreground shadow-[0_18px_48px_rgba(91,111,232,0.22)] hover:bg-primary/90"
+                className="h-11 sm:h-14 rounded-full bg-primary px-6 sm:px-8 text-sm font-semibold text-primary-foreground shadow-[0_18px_48px_rgba(91,111,232,0.22)] hover:bg-primary/90 w-full sm:w-auto"
               >
                 <Link href={primaryHref}>
                   {primaryLabel}
@@ -125,7 +125,7 @@ export function PlasmaHero({
                 asChild
                 size="lg"
                 variant="outline"
-                className="h-14 rounded-full border-[rgba(151,146,149,0.24)] bg-[rgba(204,208,224,0.46)] px-8 text-base font-semibold text-white backdrop-blur-xl hover:border-[rgba(145,162,255,0.38)] hover:bg-[rgba(91,111,232,0.14)]"
+                className="h-11 sm:h-14 rounded-full border-[rgba(151,146,149,0.24)] bg-[rgba(204,208,224,0.46)] px-6 sm:px-8 text-sm sm:text-base font-semibold text-white backdrop-blur-xl hover:border-[rgba(145,162,255,0.38)] hover:bg-[rgba(91,111,232,0.14)] w-full sm:w-auto"
               >
                 <Link href={secondaryHref}>{secondaryLabel}</Link>
               </Button>

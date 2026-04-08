@@ -9,6 +9,8 @@ import { Navbar } from "@/components/navbar"
 import { Footer } from "@/components/footer"
 import Link from "next/link"
 import { useServices } from "@/hooks/useApi"
+import { useCardsReady } from "@/hooks/useCardsReady"
+import { ServicePageCardSkeleton } from "@/components/ui/card-skeleton"
 
 const defaultServices = [
   { id: 0, title: "Custom Software Development", description: "We build tailored software solutions that perfectly align with your business requirements. From enterprise applications to startup MVPs, our team delivers scalable and maintainable code.", icon: "Code2", features: ["Enterprise Applications", "SaaS Platforms", "API Development", "Legacy System Modernization"], isActive: true, order: 0 },
@@ -188,6 +190,7 @@ function ServicePreviewCard({
 
 export default function ServicesPage() {
   const { services, isLoading } = useServices()
+  const cardsReady = useCardsReady(2000)
   const displayServices = services.length > 0 ? services : defaultServices
 
   useEffect(() => {
@@ -207,15 +210,10 @@ export default function ServicesPage() {
       {/* Services Grid */}
       <section className="pt-32 pb-20 dark:bg-black">
         <div className="container mx-auto px-6">
-          {isLoading ? (
+          {isLoading || !cardsReady ? (
             <div className="grid md:grid-cols-2 gap-8">
-              {[...Array(4)].map((_, i) => (
-                <Card key={i} className="p-8 animate-pulse">
-                  <div className="w-14 h-14 bg-muted rounded-lg mb-6" />
-                  <div className="h-6 bg-muted rounded mb-4 w-3/4" />
-                  <div className="h-4 bg-muted rounded mb-2" />
-                  <div className="h-4 bg-muted rounded w-2/3" />
-                </Card>
+              {Array.from({ length: 4 }).map((_, i) => (
+                <ServicePageCardSkeleton key={i} />
               ))}
             </div>
           ) : (
