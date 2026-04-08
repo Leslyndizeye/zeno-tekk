@@ -10,6 +10,8 @@ import { Card } from "@/components/ui/card"
 import { Footer } from "@/components/footer"
 import { Navbar } from "@/components/navbar"
 import { useProducts, type Product } from "@/hooks/useApi"
+import { useCardsReady } from "@/hooks/useCardsReady"
+import { ProductCardSkeleton } from "@/components/ui/card-skeleton"
 
 interface ShowcaseProduct extends Product {
   productType: string
@@ -258,7 +260,8 @@ function ProjectCard({ project, delay }: { project: ShowcaseProduct; delay: numb
 }
 
 export default function ProductsPage() {
-  const { products } = useProducts()
+  const { products, isLoading } = useProducts()
+  const cardsReady = useCardsReady(2000)
   const displayProducts = products.length > 0 ? buildShowcaseProducts(products) : defaultProducts
 
   useEffect(() => {
@@ -302,7 +305,11 @@ export default function ProductsPage() {
 
       <section className="pb-24">
         <div className="container mx-auto px-6">
-          {displayProducts.length === 0 ? (
+          {isLoading || !cardsReady ? (
+            <div className="grid gap-8 md:grid-cols-2 xl:grid-cols-3">
+              {Array.from({ length: 6 }).map((_, i) => <ProductCardSkeleton key={i} />)}
+            </div>
+          ) : displayProducts.length === 0 ? (
             <div className="py-20 text-center">
               <Package className="mx-auto mb-4 h-16 w-16 text-muted-foreground" />
               <h3 className="mb-2 text-xl font-semibold">No projects yet</h3>

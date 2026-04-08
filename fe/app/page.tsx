@@ -34,6 +34,8 @@ import { UserFeedback } from "@/components/user-feedback"
 import { StatsCounter } from "@/components/stats-counter"
 import { useTeamMembers } from "@/hooks/useApi"
 import { PlasmaHero } from "@/components/home/plasma-hero"
+import { FoundationCardSkeleton, FeatureCardSkeleton, ServiceCardSkeleton } from "@/components/ui/card-skeleton"
+import { useCardsReady } from "@/hooks/useCardsReady"
 import Link from "next/link"
 
 interface HeroContent {

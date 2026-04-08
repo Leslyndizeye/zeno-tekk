@@ -1,6 +1,8 @@
 "use client"
 
 import { useEffect, useMemo, useState } from "react"
+import { useCardsReady } from "@/hooks/useCardsReady"
+import { FAQSkeleton } from "@/components/ui/card-skeleton"
 import { motion } from "framer-motion"
 import { HelpCircle, Search } from "lucide-react"
 

@@ -9,6 +9,8 @@ import { Navbar } from "@/components/navbar"
 import { Footer } from "@/components/footer"
 import Link from "next/link"
 import { useServices } from "@/hooks/useApi"
+import { useCardsReady } from "@/hooks/useCardsReady"
+import { ServicePageCardSkeleton } from "@/components/ui/card-skeleton"
 
 const defaultServices = [
   { id: 0, title: "Custom Software Development", description: "We build tailored software solutions that perfectly align with your business requirements. From enterprise applications to startup MVPs, our team delivers scalable and maintainable code.", icon: "Code2", features: ["Enterprise Applications", "SaaS Platforms", "API Development", "Legacy System Modernization"], isActive: true, order: 0 },
@@ -188,6 +190,7 @@ function ServicePreviewCard({
 
 export default function ServicesPage() {
   const { services, isLoading } = useServices()
+  const cardsReady = useCardsReady(2000)
   const displayServices = services.length > 0 ? services : defaultServices
 
   useEffect(() => {
@@ -207,6 +210,11 @@ export default function ServicesPage() {
       {/* Services Grid */}
       <section className="pt-32 pb-20 dark:bg-black">
         <div className="container mx-auto px-6">
+          {isLoading || !cardsReady ? (
+            <div className="grid md:grid-cols-2 gap-8">
+              {Array.from({ length: 4 }).map((_, i) => <ServicePageCardSkeleton key={i} />)}
+            </div>
+          ) : (
           <div className="grid md:grid-cols-2 gap-8">
             {displayServices.map((service, index) => {
               const media = serviceMedia[index % serviceMedia.length]
@@ -221,6 +229,7 @@ export default function ServicesPage() {
               )
             })}
           </div>
+          )}
         </div>
       </section>
 

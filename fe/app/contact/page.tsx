@@ -14,10 +14,13 @@ import { motion } from "framer-motion"
 import { toast } from "sonner"
 import { Mail, Phone, MapPin, Clock, Send, MessageSquare, Users, Headphones, Plus, Minus, HelpCircle, ArrowUpRight, Twitter, Github, Linkedin, MessageCircle } from "lucide-react"
 import Link from "next/link"
+import { useCardsReady } from "@/hooks/useCardsReady"
+import { ContactCardSkeleton } from "@/components/ui/card-skeleton"
 
 export default function ContactPage() {
   const [formData, setFormData] = useState({ name: "", email: "", subject: "", message: "" })
   const [sending, setSending] = useState(false)
+  const cardsReady = useCardsReady(2000)
   const API_URL = process.env.NEXT_PUBLIC_API_URL
 
   useEffect(() => {
@@ -98,7 +101,7 @@ export default function ContactPage() {
       <section id="get-in-touch" className="py-16 bg-white dark:bg-black">
         <div className="container mx-auto px-6">
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 mb-20">
-            {[
+            {!cardsReady ? Array.from({ length: 4 }).map((_, i) => <ContactCardSkeleton key={i} />) : [
               { icon: Mail,  label: "Email Us",      value: "info@zenotekk.com",    desc: "Drop us a line anytime — we read every message." },
               { icon: Phone, label: "Call Us",        value: "+250 788 123 456",     desc: "Available 24/7 — always someone on the line." },
               { icon: MapPin,label: "Visit Us",       value: "Kigali, Rwanda",       desc: "KG 7 Ave, Kigali Heights." },

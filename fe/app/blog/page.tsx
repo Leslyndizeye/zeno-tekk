@@ -9,6 +9,8 @@ import { Navbar } from "@/components/navbar"
 import { Footer } from "@/components/footer"
 import { useBlogPosts } from "@/hooks/useApi"
 import type { BlogPost } from "@/hooks/useApi"
+import { useCardsReady } from "@/hooks/useCardsReady"
+import { BlogCardSkeleton } from "@/components/ui/card-skeleton"
 
 const defaultPosts: BlogPost[] = [
   { id: 0, title: "How ZENO TEKK Helps Startups Launch Faster with Custom Web Apps", excerpt: "From idea to live product — we partner with early-stage startups to design, build, and deploy web applications that are ready to scale from day one.", author: "Lesly Ndizeye", category: "Web Development", image: "https://images.pexels.com/photos/3183150/pexels-photo-3183150.jpeg", readTime: "5 min read", isFeatured: true, isActive: true, order: 0, content: "", createdAt: "2025-03-10T00:00:00Z" },
@@ -108,6 +110,7 @@ function BlogPostCard({ post, i }: { post: BlogPost; i: number }) {
 
 export default function BlogPage() {
   const { posts, isLoading } = useBlogPosts()
+  const cardsReady = useCardsReady(2000)
   const displayPosts = posts.length > 0 ? posts : defaultPosts
 
   useEffect(() => {
@@ -159,7 +162,11 @@ export default function BlogPage() {
           </div>
 
           {/* Posts */}
-          {isLoading ? null : displayPosts.length === 0 ? (
+          {isLoading || !cardsReady ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {Array.from({ length: 6 }).map((_, i) => <BlogCardSkeleton key={i} />)}
+            </div>
+          ) : displayPosts.length === 0 ? (
             <div className="py-32 text-center">
               <BookOpen className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
               <h3 className="text-xl font-semibold">No posts yet</h3>
