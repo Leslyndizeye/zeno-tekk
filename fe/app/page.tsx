@@ -30,12 +30,10 @@ import {
 } from "lucide-react"
 import { Navbar } from "@/components/navbar"
 import { Footer } from "@/components/footer"
-import { Loader } from "@/components/loader"
 import { UserFeedback } from "@/components/user-feedback"
 import { StatsCounter } from "@/components/stats-counter"
 import { useTeamMembers } from "@/hooks/useApi"
 import { PlasmaHero } from "@/components/home/plasma-hero"
-import { FoundationCardSkeleton, FeatureCardSkeleton, ServiceCardSkeleton } from "@/components/ui/card-skeleton"
 import Link from "next/link"
 
 interface HeroContent {
@@ -51,7 +49,6 @@ interface HeroContent {
 
 export default function HomePage() {
   const [heroContent, setHeroContent] = useState<HeroContent | null>(null)
-  const [cardsReady, setCardsReady] = useState(false)
   const API_URL = process.env.NEXT_PUBLIC_API_URL
   const { teamMembers } = useTeamMembers()
   const [contactForm, setContactForm] = useState({ name: "", email: "", subject: "", message: "" })
@@ -92,8 +89,6 @@ export default function HomePage() {
     }
     initAOS()
 
-    const cardTimer = setTimeout(() => setCardsReady(true), 2000)
-
     // Fetch hero content
     fetch(`${API_URL}/content/hero-content`)
       .then((res) => res.json())
@@ -103,8 +98,6 @@ export default function HomePage() {
         }
       })
       .catch((err) => console.error("Failed to fetch hero content:", err))
-
-    return () => clearTimeout(cardTimer)
   }, [API_URL])
 
   const defaultHeroContent: HeroContent = {
@@ -134,7 +127,6 @@ export default function HomePage() {
 
   return (
     <>
-      <Loader />
       <div className="min-h-screen bg-background text-foreground">
         <Navbar />
 
@@ -162,10 +154,7 @@ export default function HomePage() {
             </div>
 
             <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
-              {!cardsReady ? (
-                Array.from({ length: 3 }).map((_, i) => <FoundationCardSkeleton key={i} />)
-              ) : (
-                [
+              {[
                   { icon: Target, title: "Our Mission", description: "To empower businesses with innovative software solutions that drive growth, efficiency, and digital transformation in an ever-evolving technological landscape." },
                   { icon: Eye,    title: "Our Vision",  description: "To become a global leader in software development, recognized for delivering cutting-edge solutions that shape the future of technology and business innovation." },
                   { icon: Heart,  title: "Our Values",  description: "Excellence, integrity, innovation, and client success. We believe in building lasting partnerships through transparency, quality, and continuous improvement." },
@@ -188,8 +177,7 @@ export default function HomePage() {
                       <p className="text-muted-foreground text-pretty leading-relaxed">{item.description}</p>
                     </div>
                   </Card>
-                ))
-              )}
+                ))}
             </div>
           </div>
         </section>
@@ -218,10 +206,7 @@ export default function HomePage() {
             </div>
 
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 lg:gap-10">
-              {!cardsReady ? (
-                Array.from({ length: 3 }).map((_, i) => <FeatureCardSkeleton key={i} />)
-              ) : (
-                [
+              {[
                   { icon: Rocket, title: "Fast Delivery", desc: "Agile methodology ensures rapid development cycles without ever compromising on quality.", code: `zenotekk.deploy({\n  target: "production",\n  strategy: "zero-downtime",\n  // shipped in record time\n});` },
                   { icon: Users, title: "Expert Team", desc: "Seasoned engineers with deep expertise across the full modern technology stack.", code: `const team = zenotekk.squad({\n  roles: ["fullstack", "devops",\n          "ai", "design"],\n  // senior-level by default\n});` },
                   { icon: ShieldCheck, title: "Quality Assurance", desc: "Rigorous testing and code reviews guarantee robust, battle-tested solutions.", code: `npm run test:coverage\n// ✓ 98 tests passed\n// ✓ 100% coverage\n// ✓ zero regressions` },
@@ -249,8 +234,7 @@ export default function HomePage() {
                       </div>
                     </Card>
                   </div>
-                ))
-              )}
+                ))}
             </div>
           </div>
         </section>
@@ -270,10 +254,7 @@ export default function HomePage() {
             </div>
 
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
-              {!cardsReady ? (
-                Array.from({ length: 6 }).map((_, i) => <ServiceCardSkeleton key={i} />)
-              ) : (
-              [
+              {[
                 { icon: Code2,     title: "Custom Software",       desc: "Tailored applications built with modern technologies to fit your exact needs." },
                 { icon: Smartphone,title: "Web & Mobile Apps",     desc: "Interactive and responsive applications for all platforms and screen sizes." },
                 { icon: Brain,     title: "AI & Machine Learning", desc: "Smart software for automation, prediction, and intelligent decisions." },
@@ -313,8 +294,7 @@ export default function HomePage() {
                   {/* animated bottom line */}
                   <div className="absolute bottom-0 left-0 h-px w-0 bg-linear-to-r from-primary to-primary/20 group-hover:w-full" style={{ transition: "width 0.7s cubic-bezier(0.34, 1.56, 0.64, 1)" }} />
                 </Link>
-              ))
-              )}
+              ))}
             </div>
 
             <div className="text-center mt-8 sm:mt-12" data-aos="fade-up">
