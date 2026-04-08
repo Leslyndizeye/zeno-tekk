@@ -177,7 +177,7 @@ html {
 
 /* Enhanced smooth transitions globally */
 * {
-  transition-property: background-color, color, border-color, transform, opacity, box-shadow;
+  transition-property: background-color, color, border-color, transform, opacity, box-shadow, border-radius;
   transition-duration: 500ms;
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
 }

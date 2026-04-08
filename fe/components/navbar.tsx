@@ -40,15 +40,20 @@ export function Navbar() {
       <header className="fixed top-0 left-0 right-0 z-50 flex flex-col items-center px-4 pt-5 md:px-6">
         {/* Main bar */}
         <nav
-          style={{ transition: "all 0.5s cubic-bezier(0.4, 0, 0.2, 1)" }}
-          className={`w-full max-w-5xl flex items-center justify-between ${
+          style={{
+            borderRadius: scrolled ? "1rem" : "9999px",
+            transitionProperty: "border-radius, background-color, box-shadow",
+            transitionDuration: "0.8s, 0.5s, 0.5s",
+            transitionTimingFunction: "cubic-bezier(0.4, 0, 0.2, 1)",
+          }}
+          className={`w-full max-w-5xl flex items-center justify-between px-5 py-3 border ${
             scrolled
-              ? "rounded-2xl bg-background/95 dark:bg-black/95 backdrop-blur-2xl border border-border/60 shadow-2xl shadow-black/10 px-5 py-3"
-              : "rounded-full bg-black/60 backdrop-blur-xl border border-white/25 px-5 py-3"
+              ? "bg-background/95 dark:bg-black/95 backdrop-blur-2xl border-border/60 shadow-2xl shadow-black/10"
+              : "bg-black/60 backdrop-blur-xl border-white/25"
           }`}
         >
           {/* Logo */}
-          <Link href="/" className="flex-shrink-0">
+          <Link href="/" className="shrink-0">
             <img
               src="logo.png"
               alt="ZENO TEKK"
