@@ -73,8 +73,9 @@ export interface HeroContent {
 // Services
 export const useServices = () => {
   const { data, error, isLoading, mutate } = useSWR<{ success: boolean; data: Service[] }>(
-    `${API_URL}/content/services`,
-    fetcher
+    API_URL ? `${API_URL}/content/services` : null,
+    fetcher,
+    { revalidateOnFocus: false, revalidateOnReconnect: false }
   );
   return {
     services: data?.data || [],
@@ -87,8 +88,9 @@ export const useServices = () => {
 // Products
 export const useProducts = () => {
   const { data, error, isLoading, mutate } = useSWR<{ success: boolean; data: Product[] }>(
-    `${API_URL}/content/products`,
-    fetcher
+    API_URL ? `${API_URL}/content/products` : null,
+    fetcher,
+    { revalidateOnFocus: false, revalidateOnReconnect: false }
   );
   return {
     products: data?.data || [],
@@ -101,8 +103,9 @@ export const useProducts = () => {
 // Team Members
 export const useTeamMembers = () => {
   const { data, error, isLoading, mutate } = useSWR<{ success: boolean; data: TeamMember[] }>(
-    `${API_URL}/content/team`,
-    fetcher
+    API_URL ? `${API_URL}/content/team` : null,
+    fetcher,
+    { revalidateOnFocus: false, revalidateOnReconnect: false }
   );
   return {
     teamMembers: data?.data || [],
@@ -115,8 +118,9 @@ export const useTeamMembers = () => {
 // Testimonials
 export const useTestimonials = () => {
   const { data, error, isLoading, mutate } = useSWR<{ success: boolean; data: Testimonial[] }>(
-    `${API_URL}/content/testimonials`,
-    fetcher
+    API_URL ? `${API_URL}/content/testimonials` : null,
+    fetcher,
+    { revalidateOnFocus: false, revalidateOnReconnect: false }
   );
   return {
     testimonials: data?.data || [],
@@ -129,8 +133,9 @@ export const useTestimonials = () => {
 // Stats
 export const useStats = () => {
   const { data, error, isLoading, mutate } = useSWR<{ success: boolean; data: Stat[] }>(
-    `${API_URL}/content/stats`,
-    fetcher
+    API_URL ? `${API_URL}/content/stats` : null,
+    fetcher,
+    { revalidateOnFocus: false, revalidateOnReconnect: false }
   );
   return {
     stats: data?.data || [],
@@ -158,8 +163,9 @@ export interface BlogPost {
 // Blog Posts
 export const useBlogPosts = () => {
   const { data, error, isLoading, mutate } = useSWR<{ success: boolean; data: BlogPost[] }>(
-    `${API_URL}/content/blog`,
-    fetcher
+    API_URL ? `${API_URL}/content/blog` : null,
+    fetcher,
+    { revalidateOnFocus: false, revalidateOnReconnect: false }
   );
   return {
     posts: data?.data || [],
@@ -172,8 +178,9 @@ export const useBlogPosts = () => {
 // Hero Content
 export const useHeroContent = () => {
   const { data, error, isLoading, mutate } = useSWR<{ success: boolean; data: HeroContent }>(
-    `${API_URL}/content/hero-content`,
-    fetcher
+    API_URL ? `${API_URL}/content/hero-content` : null,
+    fetcher,
+    { revalidateOnFocus: false, revalidateOnReconnect: false }
   );
   return {
     heroContent: data?.data,

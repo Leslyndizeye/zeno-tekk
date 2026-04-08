@@ -3,7 +3,11 @@
 import type React from "react"
 
 import { useEffect, useRef, useState } from "react"
+import { motion } from "framer-motion"
+import { Award, Briefcase, Clock, Users } from "lucide-react"
+
 import { useStats } from "@/hooks/useApi"
+import { Card, CardContent } from "@/components/ui/card"
 
 interface StatDisplay {
   icon: React.ElementType
@@ -11,56 +15,79 @@ interface StatDisplay {
   suffix: string
   label: string
   prefix?: string
+  description: string
 }
 
-// Icon mapping for stat display
-const iconMap: { [key: string]: React.ElementType } = {
-  "50+": { Briefcase: true },
-  "99%": { Award: true },
-  "100+": { Users: true },
-  "3+": { Clock: true },
+const statMeta: Record<string, { icon: React.ElementType; description: string }> = {
+  "Projects Delivered": {
+    icon: Briefcase,
+    description: "Custom digital products shipped for businesses across multiple industries.",
+  },
+  "Client Satisfaction": {
+    icon: Award,
+    description: "Consistently strong outcomes backed by long-term client trust and results.",
+  },
+  "Happy Clients": {
+    icon: Users,
+    description: "Growing partnerships with ambitious teams building for real-world scale.",
+  },
+  "Years Experience": {
+    icon: Clock,
+    description: "Hands-on product delivery experience across design, engineering, and launch.",
+  },
 }
 
-function CountUpAnimation({ end, suffix, prefix = "" }: { end: number; suffix: string; prefix?: string }) {
+function CountUpAnimation({
+  end,
+  suffix,
+  prefix = "",
+}: {
+  end: number
+  suffix: string
+  prefix?: string
+}) {
   const [count, setCount] = useState(0)
   const [hasAnimated, setHasAnimated] = useState(false)
   const ref = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
+    const node = ref.current
+    if (!node) {
+      return
+    }
+
     const observer = new IntersectionObserver(
       (entries) => {
-        if (entries[0].isIntersecting && !hasAnimated) {
-          setHasAnimated(true)
-          const duration = 2000
-          const steps = 60
-          const increment = end / steps
-          let current = 0
-
-          const timer = setInterval(() => {
-            current += increment
-            if (current >= end) {
-              setCount(end)
-              clearInterval(timer)
-            } else {
-              setCount(Math.floor(current))
-            }
-          }, duration / steps)
-
-          return () => clearInterval(timer)
+        if (!entries[0]?.isIntersecting || hasAnimated) {
+          return
         }
+
+        setHasAnimated(true)
+        const duration = 1800
+        const steps = 60
+        const increment = end / steps
+        let current = 0
+
+        const timer = window.setInterval(() => {
+          current += increment
+          if (current >= end) {
+            setCount(end)
+            window.clearInterval(timer)
+          } else {
+            setCount(Math.floor(current))
+          }
+        }, duration / steps)
       },
-      { threshold: 0.5 },
+      { threshold: 0.45 },
     )
 
-    if (ref.current) {
-      observer.observe(ref.current)
-    }
+    observer.observe(node)
 
     return () => observer.disconnect()
   }, [end, hasAnimated])
 
   return (
-    <div ref={ref} className="text-4xl md:text-5xl lg:text-6xl font-bold text-primary">
+    <div ref={ref} className="text-4xl font-black tracking-tighter md:text-5xl">
       {prefix}
       {count}
       {suffix}
@@ -68,8 +95,21 @@ function CountUpAnimation({ end, suffix, prefix = "" }: { end: number; suffix: s
   )
 }
 
+function parseStatValue(rawValue: string) {
+  const value = rawValue.trim()
+  const numeric = parseInt(value.replace(/[^0-9]/g, ""), 10) || 0
+  const prefixMatch = value.match(/^[^0-9]+/)
+  const suffixMatch = value.match(/[^0-9]+$/)
+
+  return {
+    value: numeric,
+    prefix: prefixMatch?.[0] ?? "",
+    suffix: suffixMatch?.[0] ?? "",
+  }
+}
+
 export function StatsCounter() {
-  const { stats, isLoading } = useStats()
+  const { stats } = useStats()
 
   const defaultStats = [
     { label: "Projects Delivered", value: "50+" },
@@ -80,49 +120,65 @@ export function StatsCounter() {
 
   const displayStats = stats.length > 0 ? stats : defaultStats
 
-  // Parse stats for display
-  const parsedStats: StatDisplay[] = displayStats.map((stat, index) => {
-    const numValue = parseInt(stat.value.replace(/[^0-9]/g, "")) || 0
-    const suffix = stat.value.replace(/[0-9]/g, "")
-    const icons = [{ Briefcase: true }, { Award: true }, { Users: true }, { Clock: true }]
-    const iconData = icons[index] || { Briefcase: true }
-    const iconName = Object.keys(iconData)[0]
-
-    const iconModule = require("lucide-react")
-    const Icon = iconModule[iconName] || iconModule.Briefcase
+  const parsedStats: StatDisplay[] = displayStats.map((stat) => {
+    const parsedValue = parseStatValue(stat.value)
+    const meta = statMeta[stat.label] ?? {
+      icon: Briefcase,
+      description: "Trusted by teams that need thoughtful execution and reliable delivery.",
+    }
 
     return {
-      icon: Icon,
-      value: numValue,
-      suffix: suffix || "+",
+      icon: meta.icon,
       label: stat.label,
+      value: parsedValue.value,
+      prefix: parsedValue.prefix,
+      suffix: parsedValue.suffix,
+      description: meta.description,
     }
   })
 
   return (
-    <section className="py-20 md:py-32 border-y border-border bg-card/30 backdrop-blur-sm">
+    <section className="bg-white dark:bg-black py-24">
       <div className="container mx-auto px-6">
-        <div className="text-center mb-16" data-aos="fade-up">
-          <div className="inline-block px-4 py-2 bg-primary/10 rounded-full text-sm text-primary mb-4">
-            Our Achievements
-          </div>
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4 text-balance">
+        <div className="mb-16 text-center" data-aos="fade-up">
+          <h2 className="mb-4 text-3xl font-bold text-balance md:text-4xl lg:text-5xl">
             Trusted by Businesses Worldwide
           </h2>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto text-pretty">
-            Our track record speaks for itself. Here's what we've accomplished together with our clients.
+          <p className="mx-auto max-w-2xl text-lg text-muted-foreground text-pretty">
+            Our track record reflects the quality, trust, and momentum we build with every client partnership.
           </p>
         </div>
 
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 md:gap-12">
+        <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
           {parsedStats.map((stat, index) => (
-            <div key={index} data-aos="zoom-in" data-aos-delay={index * 100} className="text-center space-y-4 group">
-              <div className="w-16 h-16 md:w-20 md:h-20 mx-auto bg-primary/10 rounded-2xl flex items-center justify-center group-hover:bg-primary/20 transition-all duration-500 group-hover:scale-110">
-                <stat.icon className="w-8 h-8 md:w-10 md:h-10 text-primary" />
-              </div>
-              <CountUpAnimation end={stat.value} suffix={stat.suffix} />
-              <div className="text-sm md:text-base text-muted-foreground font-medium">{stat.label}</div>
-            </div>
+            <motion.div
+              key={`${stat.label}-${index}`}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.35 }}
+              transition={{ delay: index * 0.1, duration: 0.45, ease: "easeOut" }}
+            >
+              <Card className="group relative overflow-hidden border-border/40 bg-muted/5 p-0 transition-all duration-500 hover:bg-muted/10">
+                <CardContent className="relative p-8">
+                  <div className="absolute -right-12 -top-12 h-24 w-24 rounded-full bg-primary/5 blur-2xl transition-all duration-500 group-hover:bg-primary/10" />
+
+                  <div className="mb-6 flex items-center gap-4">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 transition-transform duration-500 group-hover:scale-110">
+                      <stat.icon className="h-5 w-5 text-primary" />
+                    </div>
+                    <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">
+                      {stat.label}
+                    </span>
+                  </div>
+
+                  <h3 className="mb-2 tracking-tighter">
+                    <CountUpAnimation end={stat.value} prefix={stat.prefix} suffix={stat.suffix} />
+                  </h3>
+
+                  <p className="text-sm leading-relaxed text-muted-foreground">{stat.description}</p>
+                </CardContent>
+              </Card>
+            </motion.div>
           ))}
         </div>
       </div>

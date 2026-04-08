@@ -1,8 +1,49 @@
 import * as React from 'react'
 
 import { cn } from '@/lib/utils'
+import { BorderGlow } from './border-glow'
 
-function Card({ className, ...props }: React.ComponentProps<'div'>) {
+interface CardProps extends React.ComponentProps<'div'> {
+  glow?: boolean
+  glowProps?: {
+    edgeSensitivity?: number
+    glowColor?: string
+    backgroundColor?: string | 'transparent'
+    borderColor?: string
+    borderRadius?: number
+    glowRadius?: number
+    glowIntensity?: number
+    coneSpread?: number
+    animated?: boolean
+    colors?: string[]
+    fillOpacity?: number
+  }
+}
+
+function Card({ className, glow = false, glowProps, ...props }: CardProps) {
+  if (glow) {
+    return (
+      <BorderGlow
+        className="h-full"
+        borderRadius={24}
+        glowIntensity={0.8}
+        edgeSensitivity={30}
+        glowColor="91 111 232"
+        colors={['#5b6fe8', '#7d8df0', '#c8d1ff']}
+        {...glowProps}
+      >
+        <div
+          data-slot="card"
+          className={cn(
+            'text-card-foreground flex h-full flex-col gap-6 rounded-[inherit] border border-transparent bg-transparent py-6 shadow-none',
+            className,
+          )}
+          {...props}
+        />
+      </BorderGlow>
+    )
+  }
+
   return (
     <div
       data-slot="card"

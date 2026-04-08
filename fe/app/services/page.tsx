@@ -1,27 +1,14 @@
 "use client"
 
-import { useEffect } from "react"
+import { useEffect, useRef, useState } from "react"
 import { Card } from "@/components/ui/card"
+import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { Code2, Smartphone, Brain, Palette, Wrench, Zap, Database, Shield, ArrowRight } from "lucide-react"
+import { ArrowRight, ArrowUpRight, CheckCircle2, Pause, Play } from "lucide-react"
 import { Navbar } from "@/components/navbar"
 import { Footer } from "@/components/footer"
 import Link from "next/link"
 import { useServices } from "@/hooks/useApi"
-import * as LucideIcons from "lucide-react"
-
-const iconMap: Record<string, React.ElementType> = {
-  Code2, Smartphone, Brain, Palette, Wrench, Zap, Database, Shield,
-}
-
-function getIcon(name: string): React.ElementType {
-  if (iconMap[name]) return iconMap[name]
-  const icon = (LucideIcons as Record<string, unknown>)[name]
-  if (typeof icon === "function" || (typeof icon === "object" && icon !== null)) {
-    return icon as React.ElementType
-  }
-  return Code2
-}
 
 const defaultServices = [
   { id: 0, title: "Custom Software Development", description: "We build tailored software solutions that perfectly align with your business requirements. From enterprise applications to startup MVPs, our team delivers scalable and maintainable code.", icon: "Code2", features: ["Enterprise Applications", "SaaS Platforms", "API Development", "Legacy System Modernization"], isActive: true, order: 0 },
@@ -33,6 +20,171 @@ const defaultServices = [
   { id: 6, title: "Security & Compliance", description: "Protect your applications and data with comprehensive security measures. We implement industry best practices and ensure regulatory compliance.", icon: "Shield", features: ["Security Audits", "Penetration Testing", "GDPR Compliance", "Data Encryption"], isActive: true, order: 6 },
   { id: 7, title: "Maintenance & Support", description: "Keep your software running smoothly with our comprehensive maintenance and support services.", icon: "Wrench", features: ["24/7 Support", "Bug Fixes", "Performance Monitoring", "Feature Updates"], isActive: true, order: 7 },
 ]
+
+const serviceMedia = [
+  {
+    backgroundImage: "https://images.unsplash.com/photo-1515879218367-8466d910aaa4?auto=format&fit=crop&w=1400&q=80",
+    videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
+  },
+  {
+    backgroundImage: "https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=1400&q=80",
+    videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4",
+  },
+  {
+    backgroundImage: "https://images.unsplash.com/photo-1620712943543-bcc4688e7485?auto=format&fit=crop&w=1400&q=80",
+    videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyrides.mp4",
+  },
+  {
+    backgroundImage: "https://images.unsplash.com/photo-1558655146-d09347e92766?auto=format&fit=crop&w=1400&q=80",
+    videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4",
+  },
+  {
+    backgroundImage: "https://images.unsplash.com/photo-1544383835-bda2bc66a55d?auto=format&fit=crop&w=1400&q=80",
+    videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4",
+  },
+  {
+    backgroundImage: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=1400&q=80",
+    videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerMeltdowns.mp4",
+  },
+  {
+    backgroundImage: "https://images.unsplash.com/photo-1516321497487-e288fb19713f?auto=format&fit=crop&w=1400&q=80",
+    videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4",
+  },
+  {
+    backgroundImage: "https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=1400&q=80",
+    videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/TearsOfSteel.mp4",
+  },
+]
+
+function ServicePreviewCard({
+  service,
+  delay,
+  backgroundImage,
+  videoUrl,
+}: {
+  service: typeof defaultServices[number]
+  delay: number
+  backgroundImage: string
+  videoUrl: string
+}) {
+  const [isHovered, setIsHovered] = useState(false)
+  const videoRef = useRef<HTMLVideoElement>(null)
+
+  const handleMouseEnter = () => {
+    setIsHovered(true)
+    if (videoRef.current) {
+      videoRef.current.play().catch(() => {})
+    }
+  }
+
+  const handleMouseLeave = () => {
+    setIsHovered(false)
+    if (videoRef.current) {
+      videoRef.current.pause()
+      videoRef.current.currentTime = 0
+    }
+  }
+
+  return (
+    <div
+      data-aos="fade-up"
+      data-aos-delay={delay}
+      className="group relative h-[30rem] w-full overflow-hidden rounded-3xl bg-background cursor-pointer active:scale-[0.98]"
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+      style={{
+        boxShadow: isHovered ? "0 24px 48px -12px rgba(0,0,0,0.4)" : "0 1px 3px rgba(0,0,0,0.1)",
+        transition: "box-shadow 1.2s ease",
+      }}
+    >
+      <div
+        className="absolute inset-0 bg-cover bg-center"
+        style={{
+          backgroundImage: `url('${backgroundImage}')`,
+          filter: isHovered ? "brightness(0.32)" : "brightness(0.58)",
+          transform: isHovered ? "scale(1.08)" : "scale(1)",
+          transition: "transform 0.7s cubic-bezier(0.34, 1.56, 0.64, 1), filter 0.5s ease",
+          willChange: "transform",
+        }}
+      />
+
+      <video
+        ref={videoRef}
+        className="absolute inset-0 h-full w-full object-cover transition-opacity duration-700 ease-out"
+        style={{ opacity: isHovered ? 1 : 0 }}
+        loop
+        muted
+        playsInline
+      >
+        <source src={videoUrl} type="video/mp4" />
+      </video>
+
+      <div
+        className="absolute inset-0 transition-opacity duration-700 ease-out"
+        style={{
+          background: "linear-gradient(to bottom, rgba(0,0,0,0.22) 0%, rgba(0,0,0,0.88) 100%)",
+          opacity: isHovered ? 0.92 : 0.76,
+        }}
+      />
+
+      <div className="pointer-events-none absolute inset-0 rounded-3xl border-2 border-white/10 transition-all duration-300 group-hover:border-white/30" />
+
+      <div className="relative z-10 flex h-full flex-col justify-end p-6 md:p-8 lg:p-10">
+        <h2 className="mb-3 text-3xl font-bold text-white transition-all duration-500 ease-out md:text-4xl">
+          {service.title}
+        </h2>
+
+        <p
+          className="max-w-2xl text-base leading-relaxed text-white/80 transition-all duration-500 ease-out md:text-lg"
+          style={{
+            transform: isHovered ? "translateY(0)" : "translateY(10px)",
+            opacity: isHovered ? 1 : 0.92,
+            transitionDelay: "0.1s",
+          }}
+        >
+          {service.description}
+        </p>
+
+        <div
+          className="mt-6 flex flex-wrap items-center justify-between gap-4 transition-all duration-300 ease-out"
+          style={{
+            opacity: isHovered ? 1 : 0.72,
+            transform: isHovered ? "translateX(0)" : "translateX(-5px)",
+          }}
+        >
+          <Badge variant="outline" className="border-white/40 bg-white/10 px-3 py-1.5 text-white hover:bg-white/20">
+            {isHovered ? <Pause className="mr-2 h-3 w-3 fill-current" /> : <Play className="mr-2 h-3 w-3 fill-current" />}
+            {isHovered ? "Solution in Focus" : "Explore Solution"}
+          </Badge>
+
+          <button
+            className="group/btn relative flex items-center gap-2 overflow-hidden rounded-full border border-white/25 px-5 py-2 text-sm font-medium text-white backdrop-blur-sm"
+            style={{
+              background: isHovered ? "rgba(255,255,255,0.14)" : "rgba(255,255,255,0.04)",
+              borderColor: isHovered ? "rgba(255,255,255,0.45)" : "rgba(255,255,255,0.2)",
+              transform: isHovered ? "scale(1.05)" : "scale(1)",
+              boxShadow: isHovered ? "0 0 18px rgba(255,255,255,0.12)" : "none",
+              transition: "background 0.6s ease, border-color 0.6s ease, transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.6s ease",
+            }}
+          >
+            <span
+              className="relative z-10 transition-transform duration-300 group-hover/btn:-translate-x-1"
+            >
+              Learn More
+            </span>
+            <ArrowRight
+              className="relative z-10 h-4 w-4 transition-transform duration-300 group-hover/btn:translate-x-1"
+            />
+            <span
+              className="absolute inset-0 rounded-full opacity-0 transition-opacity duration-300 group-hover/btn:opacity-100"
+              style={{ background: "rgba(255,255,255,0.08)" }}
+            />
+          </button>
+        </div>
+      </div>
+    </div>
+  )
+}
 
 export default function ServicesPage() {
   const { services, isLoading } = useServices()
@@ -52,27 +204,8 @@ export default function ServicesPage() {
     <div className="min-h-screen bg-background text-foreground">
       <Navbar />
 
-      {/* Hero Section */}
-      <section className="relative pt-32 pb-20 overflow-hidden">
-        <div className="absolute inset-0 overflow-hidden">
-          <div className="absolute top-1/4 -left-1/4 w-96 h-96 bg-primary/20 rounded-full blur-3xl animate-pulse" style={{ animationDuration: "4s" }} />
-          <div className="absolute bottom-1/4 -right-1/4 w-96 h-96 bg-accent/20 rounded-full blur-3xl animate-pulse" style={{ animationDuration: "6s", animationDelay: "1s" }} />
-        </div>
-        <div className="container mx-auto px-6 relative z-10">
-          <div className="max-w-4xl mx-auto text-center" data-aos="fade-up">
-            <div className="inline-block px-4 py-2 bg-primary/10 rounded-full text-sm text-primary mb-4">Our Services</div>
-            <h1 className="text-5xl md:text-6xl font-bold mb-6 text-balance">
-              Comprehensive Software <span className="text-primary">Development Services</span>
-            </h1>
-            <p className="text-xl text-muted-foreground text-pretty">
-              From concept to deployment, we deliver end-to-end solutions tailored to your business needs.
-            </p>
-          </div>
-        </div>
-      </section>
-
       {/* Services Grid */}
-      <section className="py-20">
+      <section className="pt-32 pb-20 dark:bg-black">
         <div className="container mx-auto px-6">
           {isLoading ? (
             <div className="grid md:grid-cols-2 gap-8">
@@ -88,32 +221,15 @@ export default function ServicesPage() {
           ) : (
             <div className="grid md:grid-cols-2 gap-8">
               {displayServices.map((service, index) => {
-                const Icon = getIcon(service.icon)
+                const media = serviceMedia[index % serviceMedia.length]
                 return (
-                  <Card
+                  <ServicePreviewCard
                     key={service.id}
-                    data-aos="fade-up"
-                    data-aos-delay={index * 100}
-                    className="p-8 hover:shadow-xl transition-all duration-700 hover:-translate-y-2 group border-border bg-card"
-                  >
-                    <div className="w-14 h-14 bg-primary/10 rounded-lg flex items-center justify-center mb-6 group-hover:bg-primary/20 transition-all duration-700">
-                      <Icon className="w-7 h-7 text-primary" />
-                    </div>
-                    <h3 className="text-2xl font-bold mb-4">{service.title}</h3>
-                    <p className="text-muted-foreground mb-6 text-pretty">{service.description}</p>
-                    <ul className="space-y-2 mb-6">
-                      {service.features.map((feature, fi) => (
-                        <li key={fi} className="flex items-center gap-2 text-sm">
-                          <div className="w-1.5 h-1.5 bg-primary rounded-full" />
-                          <span>{feature}</span>
-                        </li>
-                      ))}
-                    </ul>
-                    <Button variant="ghost" className="group/btn transition-all duration-500">
-                      Learn More
-                      <ArrowRight className="ml-2 w-4 h-4 group-hover/btn:translate-x-1 transition-transform duration-500" />
-                    </Button>
-                  </Card>
+                    service={service}
+                    delay={index * 100}
+                    backgroundImage={media.backgroundImage}
+                    videoUrl={media.videoUrl}
+                  />
                 )
               })}
             </div>
@@ -122,48 +238,94 @@ export default function ServicesPage() {
       </section>
 
       {/* Process Section */}
-      <section className="py-32 bg-muted/30">
-        <div className="container mx-auto px-6">
-          <div className="max-w-3xl mx-auto text-center mb-16" data-aos="fade-up">
-            <div className="inline-block px-4 py-2 bg-primary/10 rounded-full text-sm text-primary mb-4">Our Process</div>
-            <h2 className="text-4xl md:text-5xl font-bold mb-6 text-balance">How We Work</h2>
-            <p className="text-xl text-muted-foreground text-pretty">A proven methodology that ensures successful project delivery.</p>
-          </div>
-          <div className="grid md:grid-cols-4 gap-6">
-            {[
-              { step: "01", title: "Discovery", description: "Understanding your needs and goals" },
-              { step: "02", title: "Design", description: "Creating the perfect solution architecture" },
-              { step: "03", title: "Development", description: "Building with best practices and quality" },
-              { step: "04", title: "Deployment", description: "Launching and supporting your solution" },
-            ].map((phase, index) => (
-              <Card key={index} data-aos="zoom-in" data-aos-delay={index * 100} className="p-6 text-center border-border bg-card transition-all duration-700 hover:shadow-xl hover:-translate-y-1">
-                <div className="text-5xl font-bold text-primary/20 mb-4">{phase.step}</div>
-                <h3 className="text-xl font-semibold mb-2">{phase.title}</h3>
-                <p className="text-sm text-muted-foreground text-pretty">{phase.description}</p>
-              </Card>
-            ))}
+      <section className="py-32 bg-background dark:bg-black">
+        <div className="container mx-auto px-6 max-w-5xl">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
+            {/* Left */}
+            <div data-aos="fade-right">
+              {/* <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-primary text-[10px] font-black uppercase tracking-widest mb-6">
+                How it works
+              </div> */}
+              <h2 className="text-4xl lg:text-5xl font-black tracking-tight mb-6 leading-[1.1] text-foreground">
+                Seamless delivery in{" "}
+                <span className="text-primary italic">four simple steps.</span>
+              </h2>
+              <p className="text-muted-foreground text-lg leading-relaxed mb-10 italic">
+                Stop wrestling with complexity. Our proven process takes your idea from discovery to launch — on time, every time.
+              </p>
+              <Link href="/contact">
+                <Button className="px-8 py-6 h-auto bg-foreground text-background font-black rounded-xl hover:opacity-90 text-sm uppercase tracking-[0.2em] shadow-xl">
+                  Start Your Project
+                </Button>
+              </Link>
+            </div>
+
+            {/* Right — steps */}
+            <div className="relative pl-8 md:pl-0" data-aos="fade-left">
+              {/* Vertical line */}
+              <div className="absolute left-[27px] top-4 bottom-4 w-0.5 bg-border/40" />
+              <div className="space-y-12">
+                {[
+                  { title: "Discovery", desc: "We deep-dive into your goals, audience, and requirements to map out the perfect solution." },
+                  { title: "Design", desc: "Wireframes, prototypes, and UI crafted for clarity and a great user experience." },
+                  { title: "Development", desc: "Clean, scalable code built with modern technologies and best practices." },
+                  { title: "Deployment", desc: "Launch with confidence — then ongoing support, monitoring, and iteration." },
+                ].map((step, i) => (
+                  <div
+                    key={i}
+                    data-aos="fade-left"
+                    data-aos-delay={String(i * 100)}
+                    className="relative flex gap-8 md:gap-10"
+                  >
+                    <div className="relative z-10 w-14 h-14 rounded-full bg-background border-4 border-muted flex items-center justify-center shrink-0 shadow-sm group hover:border-primary transition-colors duration-300">
+                      <span className="font-black text-lg text-muted-foreground group-hover:text-primary">{i + 1}</span>
+                    </div>
+                    <div className="pt-2">
+                      <h3 className="text-xl font-bold tracking-tight mb-2 flex items-center gap-2">
+                        {step.title}
+                        {i === 0 && <CheckCircle2 className="w-4 h-4 text-emerald-500" />}
+                      </h3>
+                      <p className="text-muted-foreground text-sm leading-relaxed max-w-sm">
+                        {step.desc}
+                      </p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
       </section>
 
       {/* CTA Section */}
-      <section className="py-32" data-aos="fade-up">
+      <section className="py-24 bg-background dark:bg-black" data-aos="fade-up">
         <div className="container mx-auto px-6">
-          <Card className="p-12 md:p-16 text-center bg-gradient-to-br from-primary/10 to-accent/10 border-primary/20">
-            <h2 className="text-4xl md:text-5xl font-bold mb-6 text-balance">Ready to Start Your Project?</h2>
-            <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto text-pretty">
-              Let's discuss how we can help bring your vision to life with our expert services.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link href="/contact">
-                <Button size="lg">
-                  Get Started
-                  <ArrowRight className="ml-2 w-4 h-4" />
-                </Button>
-              </Link>
-              <Link href="/products">
-                <Button size="lg" variant="outline">View Our Work</Button>
-              </Link>
+          <Card className="relative overflow-hidden rounded-[2.5rem] border border-border dark:border-white/10 bg-muted/30 dark:bg-zinc-950 shadow-2xl">
+            <div className="p-8 md:p-12 flex flex-col md:flex-row items-center justify-between gap-10">
+              <div className="absolute -left-32 -top-32 h-64 w-64 rounded-full bg-primary/20 blur-[100px]" />
+              <div className="absolute -bottom-32 -right-32 h-64 w-64 rounded-full bg-primary/10 blur-[100px]" />
+
+              <div className="relative z-10 text-center md:text-left">
+                <p className="text-xs font-semibold uppercase tracking-[0.25em] text-primary mb-4">Let's Create Together</p>
+                <h2 className="text-3xl md:text-4xl font-black text-foreground mb-4 tracking-tighter">
+                  Ready to Transform <br /> Your Vision?
+                </h2>
+                <p className="text-muted-foreground text-sm max-w-sm">
+                  Let's collaborate to turn your ideas into powerful digital solutions that accelerate growth and deliver measurable results.
+                </p>
+              </div>
+
+              <div className="relative z-10 flex shrink-0">
+                <Link href="/contact">
+                  <Button
+                    size="lg"
+                    className="h-14 rounded-2xl bg-foreground text-background px-8 text-[10px] font-black uppercase tracking-widest shadow-xl hover:opacity-90"
+                  >
+                    Start Your Project
+                    <ArrowUpRight className="w-4 h-4" />
+                  </Button>
+                </Link>
+              </div>
             </div>
           </Card>
         </div>

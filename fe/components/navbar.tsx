@@ -3,166 +3,220 @@
 import { useState, useEffect } from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { Button } from "@/components/ui/button"
-import { Menu, X, Moon, Sun, Home, Briefcase, Package, BookOpen, ArrowUp } from "lucide-react"
+import { Menu, X, Moon, Sun, ArrowUp } from "lucide-react"
 import { useTheme } from "next-themes"
+
+const navLinks = [
+  { href: "/", label: "Home" },
+  { href: "/services", label: "Services" },
+  { href: "/products", label: "Products" },
+  { href: "/blog", label: "Blog" },
+  { href: "/faq", label: "FAQs" },
+]
 
 export function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
-  const [scrollY, setScrollY] = useState(0)
+  const [scrolled, setScrolled] = useState(false)
   const [showScrollTop, setShowScrollTop] = useState(false)
+  const [mounted, setMounted] = useState(false)
   const pathname = usePathname()
   const { theme, setTheme } = useTheme()
-  const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
     setMounted(true)
-    const handleScroll = () => {
-      const currentScrollY = window.scrollY
-      setScrollY(currentScrollY)
-      setShowScrollTop(currentScrollY > 300)
+    const onScroll = () => {
+      setScrolled(window.scrollY > 40)
+      setShowScrollTop(window.scrollY > 300)
     }
-    window.addEventListener("scroll", handleScroll, { passive: true })
-    return () => window.removeEventListener("scroll", handleScroll)
+    window.addEventListener("scroll", onScroll, { passive: true })
+    return () => window.removeEventListener("scroll", onScroll)
   }, [])
 
-  const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: "smooth" })
-  }
-
-  const navLinks = [
-    { href: "/", label: "Home", icon: Home },
-    { href: "/services", label: "Services", icon: Briefcase },
-    { href: "/products", label: "Products", icon: Package },
-    { href: "/blog", label: "Blog", icon: BookOpen },
-  ]
-
-  const isScrolled = scrollY > 30
+  // Close menu on route change
+  useEffect(() => { setIsMenuOpen(false) }, [pathname])
 
   return (
     <>
-      <nav
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-700 ease-out ${
-          isScrolled ? "bg-background/95 backdrop-blur-xl border-b border-border shadow-lg py-3" : "bg-transparent py-6"
-        }`}
-      >
-        <div
-          className={`transition-all duration-700 ease-out ${isScrolled ? "container mx-auto px-6" : "max-w-6xl mx-auto px-6"}`}
+      <header className="fixed top-0 left-0 right-0 z-50 flex flex-col items-center px-4 pt-5 md:px-6">
+        {/* Main bar */}
+        <nav
+          style={{ transition: "all 0.5s cubic-bezier(0.4, 0, 0.2, 1)" }}
+          className={`w-full max-w-5xl flex items-center justify-between ${
+            scrolled
+              ? "rounded-2xl bg-background/95 dark:bg-black/95 backdrop-blur-2xl border border-border/60 shadow-2xl shadow-black/10 px-5 py-3"
+              : "rounded-full bg-black/60 backdrop-blur-xl border border-white/25 px-5 py-3"
+          }`}
         >
-          <div
-            className={`flex items-center justify-between transition-all duration-700 ease-out ${
-              isScrolled ? "rounded-none" : "rounded-full bg-card/50 backdrop-blur-md border border-border px-6 py-3"
-            }`}
-          >
-            <Link href="/" className="flex items-center gap-3 group">
-              <div
-                className={`relative transition-all duration-700 ease-out ${
-                  isScrolled ? "w-28" : "w-36"
-                } flex items-center justify-center`}
-              >
-                <img src="logo.png" alt="logo" />
-              </div>
-            </Link>
+          {/* Logo */}
+          <Link href="/" className="flex-shrink-0">
+            <img
+              src="logo.png"
+              alt="ZENO TEKK"
+              style={{ transition: "width 0.5s cubic-bezier(0.4, 0, 0.2, 1)" }}
+              className={scrolled ? "w-24" : "w-28"}
+            />
+          </Link>
 
-            {/* Desktop Menu */}
-            <div className="hidden md:flex items-center gap-2">
-              {navLinks.map((link) => {
-                const Icon = link.icon
-                return (
-                  <Link
-                    key={link.href}
-                    href={link.href}
-                    className={`flex items-center gap-2 px-4 py-2 text-sm font-medium transition-all duration-300 rounded-full relative group ${
-                      pathname === link.href
-                        ? "text-primary bg-primary/10 backdrop-blur-sm"
-                        : "hover:bg-card/80 hover:backdrop-blur-md"
-                    }`}
-                  >
-                    <Icon className="w-4 h-4" />
-                    {link.label}
-                  </Link>
-                )
-              })}
-
-              <div className="ml-4 pl-4 border-l border-border/50">
+          {/* Desktop links */}
+          <div className="hidden md:flex items-center gap-0.5">
+            {navLinks.map((link) => {
+              const isActive = pathname === link.href
+              return (
                 <Link
-                  href="/contact"
-                  className="flex items-center gap-2 px-6 py-2.5 text-sm font-semibold bg-gradient-to-r from-primary to-blue-600 text-primary-foreground rounded-full transition-all duration-300 hover:shadow-lg hover:shadow-primary/50 hover:scale-105 active:scale-95"
+                  key={link.href}
+                  href={link.href}
+                  className={`relative px-4 py-2 text-sm font-medium rounded-full transition-all duration-300 ${
+                    isActive
+                      ? scrolled
+                        ? "text-primary"
+                        : "text-white"
+                      : scrolled
+                        ? "text-muted-foreground hover:text-foreground hover:bg-muted/60"
+                        : "text-white/65 hover:text-white hover:bg-white/8"
+                  }`}
                 >
-                  Reach Us
+                  {link.label}
+                  {/* Active dot */}
+                  <span
+                    style={{ transition: "opacity 0.3s ease, transform 0.3s ease" }}
+                    className={`absolute bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-primary ${
+                      isActive ? "opacity-100 scale-100" : "opacity-0 scale-0"
+                    }`}
+                  />
                 </Link>
-              </div>
-
-              {mounted && (
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-                  className="ml-2 hover:bg-primary/10 hover:text-primary hover:backdrop-blur-md transition-all duration-300 rounded-full hover:scale-110 active:scale-95"
-                >
-                  {theme === "dark" ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
-                </Button>
-              )}
-            </div>
-
-            {/* Mobile Menu Button */}
-            <div className="flex items-center gap-2 md:hidden">
-              {mounted && (
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-                  className="hover:bg-primary/10 hover:text-primary transition-all duration-300 rounded-full"
-                >
-                  {theme === "dark" ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
-                </Button>
-              )}
-              <button onClick={() => setIsMenuOpen(!isMenuOpen)}>
-                {isMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-              </button>
-            </div>
+              )
+            })}
           </div>
 
-          {/* Mobile Menu */}
-          {isMenuOpen && (
-            <div className="md:hidden mt-4 pb-4 space-y-4 animate-in fade-in slide-in-from-top-2 duration-200 bg-card/95 backdrop-blur-md rounded-2xl p-6 border border-border">
-              {navLinks.map((link) => {
-                const Icon = link.icon
-                return (
-                  <Link
-                    key={link.href}
-                    href={link.href}
-                    onClick={() => setIsMenuOpen(false)}
-                    className={`flex items-center gap-3 w-full text-left py-2 transition-colors ${
-                      pathname === link.href ? "text-primary font-semibold" : "hover:text-primary"
-                    }`}
-                  >
-                    <Icon className="w-5 h-5" />
-                    {link.label}
-                  </Link>
-                )
-              })}
+          {/* Desktop right */}
+          <div className="hidden md:flex items-center gap-2">
+            {mounted && (
+              <button
+                onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+                aria-label="Toggle theme"
+                className={`w-9 h-9 rounded-full flex items-center justify-center transition-all duration-300 active:scale-90 ${
+                  scrolled
+                    ? "text-muted-foreground hover:text-foreground hover:bg-muted/60"
+                    : "text-white/65 hover:text-white hover:bg-white/10"
+                }`}
+              >
+                {theme === "dark"
+                  ? <Sun className="w-4 h-4" />
+                  : <Moon className="w-4 h-4" />}
+              </button>
+            )}
+            <Link
+              href="/contact"
+              className={`px-5 py-2 rounded-full text-sm font-semibold transition-all duration-300 hover:scale-[1.04] active:scale-95 ${
+                scrolled
+                  ? "bg-primary text-primary-foreground hover:shadow-xl hover:shadow-primary/25"
+                  : "bg-white text-zinc-900 hover:bg-white/90 hover:shadow-xl hover:shadow-black/20"
+              }`}
+            >
+              Get in Touch
+            </Link>
+          </div>
+
+          {/* Mobile right */}
+          <div className="flex md:hidden items-center gap-1">
+            {mounted && (
+              <button
+                onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+                aria-label="Toggle theme"
+                className={`w-9 h-9 rounded-full flex items-center justify-center transition-all duration-300 ${
+                  scrolled ? "text-muted-foreground" : "text-white/70"
+                }`}
+              >
+                {theme === "dark"
+                  ? <Sun className="w-4 h-4" />
+                  : <Moon className="w-4 h-4" />}
+              </button>
+            )}
+            <button
+              onClick={() => setIsMenuOpen((o) => !o)}
+              aria-label="Toggle menu"
+              className={`w-9 h-9 rounded-full flex items-center justify-center transition-all duration-300 ${
+                scrolled
+                  ? "text-foreground hover:bg-muted/60"
+                  : "text-white hover:bg-white/10"
+              }`}
+            >
+              <span
+                style={{ transition: "transform 0.3s ease, opacity 0.3s ease" }}
+                className={`absolute ${isMenuOpen ? "opacity-100 rotate-0" : "opacity-0 rotate-90"}`}
+              >
+                <X className="w-5 h-5" />
+              </span>
+              <span
+                style={{ transition: "transform 0.3s ease, opacity 0.3s ease" }}
+                className={`absolute ${isMenuOpen ? "opacity-0 -rotate-90" : "opacity-100 rotate-0"}`}
+              >
+                <Menu className="w-5 h-5" />
+              </span>
+            </button>
+          </div>
+        </nav>
+
+        {/* Mobile dropdown */}
+        <div
+          style={{
+            transition: "opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1), transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+            opacity: isMenuOpen ? 1 : 0,
+            transform: isMenuOpen ? "translateY(0)" : "translateY(-8px)",
+            pointerEvents: isMenuOpen ? "auto" : "none",
+          }}
+          className={`w-full max-w-5xl mt-2 rounded-2xl border overflow-hidden md:hidden ${
+            scrolled
+              ? "border-border/40 bg-background/90 backdrop-blur-2xl shadow-2xl shadow-black/10"
+              : "border-white/10 bg-zinc-900/85 backdrop-blur-2xl shadow-2xl"
+          }`}
+        >
+          <div className="p-3 space-y-0.5">
+            {navLinks.map((link) => {
+              const isActive = pathname === link.href
+              return (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className={`flex items-center justify-between w-full px-4 py-3 rounded-xl text-sm font-medium transition-all duration-200 ${
+                    isActive
+                      ? "bg-primary/10 text-primary"
+                      : scrolled
+                        ? "text-muted-foreground hover:bg-muted/60 hover:text-foreground"
+                        : "text-white/70 hover:bg-white/8 hover:text-white"
+                  }`}
+                >
+                  {link.label}
+                  {isActive && <span className="w-1.5 h-1.5 rounded-full bg-primary" />}
+                </Link>
+              )
+            })}
+            <div className="pt-2 pb-1 px-0.5">
               <Link
                 href="/contact"
-                onClick={() => setIsMenuOpen(false)}
-                className="flex items-center justify-center gap-2 w-full py-3 mt-4 text-sm font-semibold bg-gradient-to-r from-primary to-blue-600 text-primary-foreground rounded-full"
+                className="flex w-full items-center justify-center rounded-xl py-3 text-sm font-semibold bg-primary text-primary-foreground transition-opacity duration-200 hover:opacity-90 active:scale-95"
               >
-                Reach Us
+                Get in Touch
               </Link>
             </div>
-          )}
+          </div>
         </div>
-      </nav>
+      </header>
 
-      {showScrollTop && (
-        <button
-          onClick={scrollToTop}
-          className="fixed bottom-8 right-8 z-50 p-3 bg-gradient-to-r from-primary to-blue-600 text-primary-foreground rounded-full shadow-lg hover:shadow-primary/50 transition-all duration-300 hover:scale-110 active:scale-95 animate-in fade-in slide-in-from-bottom-4"
-          aria-label="Scroll to top"
-        >
-          <ArrowUp className="w-5 h-5" />
-        </button>
-      )}
+      {/* Scroll to top */}
+      <button
+        onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+        aria-label="Scroll to top"
+        style={{
+          transition: "opacity 0.3s ease, transform 0.3s ease",
+          opacity: showScrollTop ? 1 : 0,
+          transform: showScrollTop ? "translateY(0) scale(1)" : "translateY(12px) scale(0.8)",
+          pointerEvents: showScrollTop ? "auto" : "none",
+        }}
+        className="fixed bottom-8 right-8 z-50 w-11 h-11 rounded-full bg-primary text-primary-foreground shadow-lg shadow-primary/30 flex items-center justify-center hover:scale-110 hover:shadow-xl hover:shadow-primary/40 active:scale-95 transition-transform duration-200"
+      >
+        <ArrowUp className="w-4 h-4" />
+      </button>
     </>
   )
 }

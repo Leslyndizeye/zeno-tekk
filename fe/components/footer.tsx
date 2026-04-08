@@ -1,32 +1,30 @@
 import Link from "next/link"
-import { Github, Linkedin, Twitter, Mail, Facebook, Instagram, Youtube, Globe } from "lucide-react"
+import { Facebook, Github, Globe, Instagram, Linkedin, Mail, Twitter, Youtube } from "lucide-react"
 
 export function Footer() {
   const currentYear = new Date().getFullYear()
 
   return (
-    <footer className="border-t border-border bg-card/50 backdrop-blur-sm">
+    <footer className="border-t border-border bg-white text-foreground dark:border-white/10 dark:bg-black">
       <div className="container mx-auto px-6 py-16">
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
-          {/* Company Info */}
+        <div className="mb-12 grid gap-12 md:grid-cols-2 lg:grid-cols-4">
           <div className="space-y-4" data-aos="fade-up">
             <div className="flex items-center gap-2">
-              <div className="w-28 rounded-xl flex items-center justify-center">
+              <div className="flex w-28 items-center justify-center rounded-xl">
                 <img src="logo.png" alt="" />
               </div>
             </div>
-            <p className="text-sm text-muted-foreground leading-relaxed max-w-xs text-pretty">
+            <p className="max-w-xs text-sm leading-relaxed text-muted-foreground text-pretty">
               Transforming ideas into innovative software solutions. Building the future, one line of code at a time.
             </p>
             <div className="flex items-center gap-2 text-sm text-muted-foreground">
-              <Globe className="w-4 h-4" />
+              <Globe className="h-4 w-4" />
               <span>Kigali, Rwanda</span>
             </div>
           </div>
 
-          {/* Quick Links */}
           <div data-aos="fade-up" data-aos-delay="100">
-            <h3 className="font-semibold text-lg mb-4">Quick Links</h3>
+            <h3 className="mb-4 text-lg font-semibold">Quick Links</h3>
             <ul className="space-y-3">
               {[
                 { href: "/", label: "Home" },
@@ -38,7 +36,7 @@ export function Footer() {
                 <li key={link.href}>
                   <Link
                     href={link.href}
-                    className="text-sm text-muted-foreground hover:text-primary transition-colors duration-200 hover:translate-x-1 inline-block"
+                    className="inline-block text-sm text-muted-foreground transition-all duration-300 hover:translate-x-1 hover:text-primary"
                   >
                     {link.label}
                   </Link>
@@ -47,9 +45,8 @@ export function Footer() {
             </ul>
           </div>
 
-          {/* Services */}
           <div data-aos="fade-up" data-aos-delay="200">
-            <h3 className="font-semibold text-lg mb-4">Services</h3>
+            <h3 className="mb-4 text-lg font-semibold">Services</h3>
             <ul className="space-y-3">
               {[
                 "Custom Software",
@@ -60,7 +57,7 @@ export function Footer() {
                 "Cloud Services",
               ].map((service) => (
                 <li key={service}>
-                  <span className="text-sm text-muted-foreground hover:text-primary transition-colors duration-200 cursor-pointer hover:translate-x-1 inline-block">
+                  <span className="inline-block cursor-pointer text-sm text-muted-foreground transition-all duration-300 hover:translate-x-1 hover:text-primary">
                     {service}
                   </span>
                 </li>
@@ -68,10 +65,9 @@ export function Footer() {
             </ul>
           </div>
 
-          {/* Connect */}
           <div data-aos="fade-up" data-aos-delay="300">
-            <h3 className="font-semibold text-lg mb-4">Connect With Us</h3>
-            <p className="text-sm text-muted-foreground mb-4">Follow us on social media for updates and insights.</p>
+            <h3 className="mb-4 text-lg font-semibold">Connect With Us</h3>
+            <p className="mb-4 text-sm text-muted-foreground">Follow us on social media for updates and insights.</p>
             <div className="grid grid-cols-4 gap-3">
               {[
                 { icon: Github, href: "#", label: "GitHub" },
@@ -87,31 +83,30 @@ export function Footer() {
                   key={index}
                   href={social.href}
                   aria-label={social.label}
-                  className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center hover:bg-primary hover:text-primary-foreground transition-all duration-300 hover:scale-110 hover:-translate-y-1 group"
+                  className="group flex h-12 w-12 items-center justify-center rounded-xl border border-primary/10 bg-primary/5 transition-all duration-300 hover:-translate-y-1 hover:scale-110 hover:border-primary hover:bg-primary hover:text-primary-foreground dark:bg-primary/10"
                 >
-                  <social.icon className="w-5 h-5 text-primary group-hover:text-primary-foreground transition-colors" />
+                  <social.icon className="h-5 w-5 text-primary transition-colors group-hover:text-primary-foreground" />
                 </a>
               ))}
             </div>
           </div>
         </div>
 
-        {/* Bottom Bar */}
         <div
-          className="pt-8 border-t border-border flex flex-col md:flex-row justify-between items-center gap-4"
+          className="flex flex-col items-center justify-between gap-4 border-t border-border pt-8 md:flex-row"
           data-aos="fade-up"
         >
           <p className="text-sm text-muted-foreground">
             © {currentYear} ZENO TEKK. All rights reserved. Built with passion and innovation.
           </p>
           <div className="flex gap-6 text-sm">
-            <Link href="#" className="text-muted-foreground hover:text-primary transition-colors">
+            <Link href="#" className="text-muted-foreground transition-colors duration-300 hover:text-primary">
               Privacy Policy
             </Link>
-            <Link href="#" className="text-muted-foreground hover:text-primary transition-colors">
+            <Link href="#" className="text-muted-foreground transition-colors duration-300 hover:text-primary">
               Terms of Service
             </Link>
-            <Link href="#" className="text-muted-foreground hover:text-primary transition-colors">
+            <Link href="#" className="text-muted-foreground transition-colors duration-300 hover:text-primary">
               Cookie Policy
             </Link>
           </div>

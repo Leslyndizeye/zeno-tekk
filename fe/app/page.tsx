@@ -24,6 +24,9 @@ import {
   Mail,
   CheckCircle2,
   Send,
+  Terminal,
+  Boxes,
+  ShieldCheck,
 } from "lucide-react"
 import { Navbar } from "@/components/navbar"
 import { Footer } from "@/components/footer"
@@ -31,6 +34,7 @@ import { Loader } from "@/components/loader"
 import { UserFeedback } from "@/components/user-feedback"
 import { StatsCounter } from "@/components/stats-counter"
 import { useTeamMembers } from "@/hooks/useApi"
+import { PlasmaHero } from "@/components/home/plasma-hero"
 import Link from "next/link"
 
 interface HeroContent {
@@ -110,6 +114,17 @@ export default function HomePage() {
   }
 
   const content = heroContent || defaultHeroContent
+  const homeCardGlow = {
+    backgroundColor: "#070b19",
+    borderColor: "rgba(91, 111, 232, 0.2)",
+    glowColor: "91 111 232",
+    borderRadius: 24,
+    glowRadius: 56,
+    glowIntensity: 1,
+    coneSpread: 22,
+    fillOpacity: 0,
+    colors: ["#5b6fe8", "#7d8df0", "#d3dbff"],
+  }
 
   return (
     <>
@@ -117,192 +132,168 @@ export default function HomePage() {
       <div className="min-h-screen bg-background text-foreground">
         <Navbar />
 
-        {/* Hero Section */}
-        <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-32 pb-24">
-          {/* Animated Background Gradient */}
-          <div className="absolute inset-0 overflow-hidden">
-            <div
-              className="absolute top-1/4 -left-1/4 w-96 h-96 bg-primary/20 rounded-full blur-3xl animate-pulse"
-              style={{ animationDuration: "4s" }}
-            />
-            <div
-              className="absolute bottom-1/4 -right-1/4 w-96 h-96 bg-blue-600/20 rounded-full blur-3xl animate-pulse"
-              style={{ animationDuration: "6s", animationDelay: "1s" }}
-            />
-          </div>
+        <PlasmaHero
+          badge={content.badge}
+          title={content.title}
+          subtitle={content.subtitle}
+          description={content.description}
+          primaryLabel={content.ctaButton1Text}
+          primaryHref={content.ctaButton1Url}
+          secondaryLabel={content.ctaButton2Text}
+          secondaryHref={content.ctaButton2Url}
+        />
 
-          <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-            <div className="max-w-4xl mx-auto text-center space-y-12">
-              <h1 data-aos="fade-up" className="text-4xl sm:text-5xl md:text-7xl font-bold leading-tight text-balance">
-                {content.title.split(content.subtitle).map((part, i, arr) => (
-                  <span key={i}>
-                    {part}
-                    {i < arr.length - 1 && <span className="text-primary">{content.subtitle}</span>}
-                  </span>
-                ))}
-              </h1>
-
-              <p
-                data-aos="fade-up"
-                data-aos-delay="200"
-                className="text-lg sm:text-xl md:text-2xl text-muted-foreground max-w-2xl mx-auto text-pretty"
-              >
-                {content.description}
-              </p>
-
-              <div
-                data-aos="fade-up"
-                data-aos-delay="400"
-                className="flex flex-col sm:flex-row gap-6 justify-center pt-4"
-              >
-                <Link href={content.ctaButton1Url}>
-                  <Button size="lg" className="group transition-all duration-500 hover:scale-105 hover:shadow-lg">
-                    {content.ctaButton1Text}
-                    <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform duration-500" />
-                  </Button>
-                </Link>
-                <Link href={content.ctaButton2Url}>
-                  <Button
-                    size="lg"
-                    variant="outline"
-                    className="transition-all duration-500 hover:scale-105 hover:shadow-lg bg-transparent"
-                  >
-                    {content.ctaButton2Text}
-                  </Button>
-                </Link>
-              </div>
-            </div>
-          </div>
-
-          {/* Scroll Indicator */}
-          <div className="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce">
-            <div className="w-6 h-10 border-2 border-muted-foreground rounded-full flex justify-center">
-              <div className="w-1 h-3 bg-muted-foreground rounded-full mt-2 animate-pulse" />
-            </div>
-          </div>
-        </section>
+        <div className="border-t border-border/25" />
 
         {/* Mission, Vision, Values Section */}
-        <section className="py-32 sm:py-40 bg-muted/30">
+        <section id="foundation" className="py-16 sm:py-24 bg-white dark:bg-black">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="max-w-3xl mx-auto text-center mb-20" data-aos="fade-up">
-              <div className="inline-block px-4 py-2 bg-primary/10 rounded-full text-sm text-primary mb-6">
-                Who We Are
-              </div>
+            <div className="max-w-3xl mx-auto text-center mb-12" data-aos="fade-up">
               <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-8 text-balance">Our Foundation</h2>
               <p className="text-lg sm:text-xl text-muted-foreground text-pretty">
                 Built on principles of innovation, excellence, and client success.
               </p>
             </div>
 
-            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8 sm:gap-10">
-              <Card
-                data-aos="fade-up"
-                data-aos-delay="100"
-                className="p-6 sm:p-8 text-center transition-all duration-700 hover:shadow-2xl hover:-translate-y-2 group border-border bg-card"
-              >
-                <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-6 group-hover:bg-primary/20 transition-all duration-700 group-hover:scale-110">
-                  <Target className="w-8 h-8 text-primary" />
-                </div>
-                <h3 className="text-2xl font-bold mb-4">Our Mission</h3>
-                <p className="text-muted-foreground text-pretty">
-                  To empower businesses with innovative software solutions that drive growth, efficiency, and digital
-                  transformation in an ever-evolving technological landscape.
-                </p>
-              </Card>
-
-              <Card
-                data-aos="fade-up"
-                data-aos-delay="200"
-                className="p-6 sm:p-8 text-center transition-all duration-700 hover:shadow-2xl hover:-translate-y-2 group border-border bg-card"
-              >
-                <div className="w-16 h-16 bg-accent/10 rounded-full flex items-center justify-center mx-auto mb-6 group-hover:bg-accent/20 transition-all duration-700 group-hover:scale-110">
-                  <Eye className="w-8 h-8 text-accent" />
-                </div>
-                <h3 className="text-2xl font-bold mb-4">Our Vision</h3>
-                <p className="text-muted-foreground text-pretty">
-                  To become a global leader in software development, recognized for delivering cutting-edge solutions
-                  that shape the future of technology and business innovation.
-                </p>
-              </Card>
-
-              <Card
-                data-aos="fade-up"
-                data-aos-delay="300"
-                className="p-6 sm:p-8 text-center transition-all duration-700 hover:shadow-2xl hover:-translate-y-2 group border-border bg-card sm:col-span-2 lg:col-span-1"
-              >
-                <div className="w-16 h-16 bg-blue-500/10 rounded-full flex items-center justify-center mx-auto mb-6 group-hover:bg-blue-500/20 transition-all duration-700 group-hover:scale-110">
-                  <Heart className="w-8 h-8 text-blue-500" />
-                </div>
-                <h3 className="text-2xl font-bold mb-4">Our Values</h3>
-                <p className="text-muted-foreground text-pretty">
-                  Excellence, integrity, innovation, and client success. We believe in building lasting partnerships
-                  through transparency, quality, and continuous improvement.
-                </p>
-              </Card>
-            </div>
-          </div>
-        </section>
-
-        {/* Stats Counter Section */}
-        <StatsCounter />
-
-        {/* Why Choose Us Section */}
-        <section className="py-32 sm:py-40">
-          <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="max-w-3xl mx-auto text-center mb-20" data-aos="fade-up">
-              <div className="inline-block px-4 py-2 bg-primary/10 rounded-full text-sm text-primary mb-6">
-                Why ZENO TEKK
-              </div>
-              <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-8 text-balance">What Sets Us Apart</h2>
-              <p className="text-lg sm:text-xl text-muted-foreground text-pretty">
-                We combine technical expertise with business acumen to deliver exceptional results.
-              </p>
-            </div>
-
-            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8 sm:gap-10">
+            <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
               {[
                 {
-                  icon: Rocket,
-                  title: "Fast Delivery",
-                  description: "Agile methodology ensures rapid development without compromising quality.",
+                  icon: Target,
+                  title: "Our Mission",
+                  description:
+                    "To empower businesses with innovative software solutions that drive growth, efficiency, and digital transformation in an ever-evolving technological landscape.",
                 },
                 {
-                  icon: Users,
-                  title: "Expert Team",
-                  description: "Seasoned developers with expertise across multiple technologies and domains.",
+                  icon: Eye,
+                  title: "Our Vision",
+                  description:
+                    "To become a global leader in software development, recognized for delivering cutting-edge solutions that shape the future of technology and business innovation.",
                 },
                 {
-                  icon: Award,
-                  title: "Quality Assurance",
-                  description: "Rigorous testing and code reviews guarantee robust, bug-free solutions.",
+                  icon: Heart,
+                  title: "Our Values",
+                  description:
+                    "Excellence, integrity, innovation, and client success. We believe in building lasting partnerships through transparency, quality, and continuous improvement.",
                 },
-              ].map((feature, index) => (
+              ].map((item, index) => (
                 <Card
-                  key={index}
-                  data-aos="zoom-in"
-                  data-aos-delay={index * 100}
-                  className="p-6 sm:p-8 text-center transition-all duration-700 hover:shadow-2xl hover:-translate-y-2 group border-border bg-card"
+                  key={item.title}
+                  data-aos="fade-up"
+                  data-aos-delay={(index + 1) * 100}
+                  className="group relative h-full overflow-hidden border-border/40 bg-muted/5 p-0 transition-all duration-500 hover:-translate-y-1 hover:bg-muted/10"
                 >
-                  <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-6 group-hover:bg-primary/20 transition-all duration-700 group-hover:scale-110">
-                    <feature.icon className="w-8 h-8 text-primary" />
+                  <div className="absolute -right-12 -top-12 h-24 w-24 rounded-full bg-primary/5 blur-2xl transition-all duration-500 group-hover:bg-primary/10" />
+                  <div className="relative flex h-full flex-col p-8">
+                    <div className="mb-6 flex items-center gap-4">
+                      <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 transition-transform duration-500 group-hover:scale-110">
+                        <item.icon className="h-5 w-5 text-primary" />
+                      </div>
+                      <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">
+                        {item.title}
+                      </span>
+                    </div>
+
+                    <h3 className="mb-3 text-2xl font-black tracking-tight">{item.title}</h3>
+                    <p className="text-muted-foreground text-pretty leading-relaxed">{item.description}</p>
                   </div>
-                  <h3 className="text-xl font-bold mb-3">{feature.title}</h3>
-                  <p className="text-muted-foreground text-pretty">{feature.description}</p>
                 </Card>
               ))}
             </div>
           </div>
         </section>
 
-        {/* Services Preview */}
-        <section className="py-32 sm:py-40 bg-muted/30">
+        <div className="border-t border-border/25" />
+
+        {/* Stats Counter Section */}
+        <StatsCounter />
+
+        <div className="border-t border-border/25" />
+
+        {/* Why Choose Us Section */}
+        <section id="why-us" className="py-16 sm:py-24 bg-background dark:bg-black">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="max-w-3xl mb-20" data-aos="fade-right">
-              <div className="inline-block px-4 py-2 bg-primary/10 rounded-full text-sm text-primary mb-6">
-                What We Do
-              </div>
-              <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-8 text-balance">
+            <div className="max-w-3xl mx-auto text-center mb-12" data-aos="fade-up">
+              {/* <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 mb-6">
+                <Code2 className="w-3.5 h-3.5 text-primary" />
+                <span className="text-[10px] font-black uppercase tracking-widest text-primary">Our Edge</span>
+              </div> */}
+              <h2 className="text-3xl sm:text-4xl md:text-5xl font-black mb-6 tracking-tight leading-[1.1] text-foreground">
+                What Sets Us <span className="text-primary italic underline decoration-primary/20 underline-offset-8">Apart</span>
+              </h2>
+              <p className="text-lg sm:text-xl text-muted-foreground text-pretty">
+                We combine technical expertise with business acumen to deliver exceptional results.
+              </p>
+            </div>
+
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-10">
+              {[
+                {
+                  icon: Rocket,
+                  title: "Fast Delivery",
+                  desc: "Agile methodology ensures rapid development cycles without ever compromising on quality.",
+                  code: `zenotekk.deploy({
+  target: "production",
+  strategy: "zero-downtime",
+  // shipped in record time
+});`,
+                },
+                {
+                  icon: Users,
+                  title: "Expert Team",
+                  desc: "Seasoned engineers with deep expertise across the full modern technology stack.",
+                  code: `const team = zenotekk.squad({
+  roles: ["fullstack", "devops",
+          "ai", "design"],
+  // senior-level by default
+});`,
+                },
+                {
+                  icon: ShieldCheck,
+                  title: "Quality Assurance",
+                  desc: "Rigorous testing and code reviews guarantee robust, battle-tested solutions.",
+                  code: `npm run test:coverage
+// ✓ 98 tests passed
+// ✓ 100% coverage
+// ✓ zero regressions`,
+                },
+              ].map((feature, index) => (
+                <div key={index} data-aos="fade-up" data-aos-delay={index * 100}>
+                  <Card className="flex flex-col h-full bg-card border border-border rounded-[2.5rem] overflow-hidden shadow-sm hover:shadow-2xl transition-all duration-500 hover:border-primary/30 group p-0">
+                    <div className="p-10 pb-6 flex items-start gap-4">
+                      <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center text-primary shrink-0 group-hover:bg-primary group-hover:text-white transition-all duration-500">
+                        <feature.icon className="w-6 h-6" />
+                      </div>
+                      <div>
+                        <h3 className="text-xl font-black tracking-tight mb-2 text-foreground">{feature.title}</h3>
+                        <p className="text-muted-foreground text-sm italic leading-relaxed">
+                          &ldquo;{feature.desc}&rdquo;
+                        </p>
+                      </div>
+                    </div>
+                    <div className="mt-auto p-4 pt-0">
+                      <div className="bg-zinc-100 dark:bg-zinc-950 rounded-3xl p-6 font-mono text-[11px] text-zinc-500 dark:text-zinc-400 overflow-hidden relative group-hover:bg-zinc-200 dark:group-hover:bg-black transition-colors duration-500">
+                        <div className="absolute top-4 right-4 flex gap-1.5 opacity-30">
+                          <div className="w-2 h-2 rounded-full bg-red-500" />
+                          <div className="w-2 h-2 rounded-full bg-amber-500" />
+                          <div className="w-2 h-2 rounded-full bg-emerald-500" />
+                        </div>
+                        <pre className="overflow-x-auto"><code>{feature.code}</code></pre>
+                      </div>
+                    </div>
+                  </Card>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <div className="border-t border-border/25" />
+
+        {/* Services Preview */}
+        <section id="services" className="py-16 sm:py-24 bg-background dark:bg-black">
+          <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="max-w-3xl mb-12" data-aos="fade-up">
+              <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-8 text-balance text-foreground">
                 Comprehensive Software Solutions
               </h2>
               <p className="text-lg sm:text-xl text-muted-foreground text-pretty">
@@ -310,51 +301,47 @@ export default function HomePage() {
               </p>
             </div>
 
-            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
               {[
-                {
-                  icon: Code2,
-                  title: "Custom Software",
-                  description: "Tailored applications built with modern technologies.",
-                },
-                {
-                  icon: Smartphone,
-                  title: "Web & Mobile Apps",
-                  description: "Interactive and responsive applications for all platforms.",
-                },
-                {
-                  icon: Brain,
-                  title: "AI & Machine Learning",
-                  description: "Smart software for automation and intelligent decisions.",
-                },
-                {
-                  icon: Palette,
-                  title: "UI/UX Design",
-                  description: "Beautiful interfaces that enhance user engagement.",
-                },
-                {
-                  icon: Wrench,
-                  title: "Maintenance & Support",
-                  description: "Long-term support for your software solutions.",
-                },
-                {
-                  icon: Zap,
-                  title: "DevOps Solutions",
-                  description: "Streamlined deployment and cloud infrastructure.",
-                },
+                { icon: Code2,     title: "Custom Software",       desc: "Tailored applications built with modern technologies to fit your exact needs." },
+                { icon: Smartphone,title: "Web & Mobile Apps",     desc: "Interactive and responsive applications for all platforms and screen sizes." },
+                { icon: Brain,     title: "AI & Machine Learning", desc: "Smart software for automation, prediction, and intelligent decisions." },
+                { icon: Palette,   title: "UI/UX Design",          desc: "Beautiful, intuitive interfaces that keep users engaged and coming back." },
+                { icon: Wrench,    title: "Maintenance & Support",  desc: "Long-term support and updates to keep your software running flawlessly." },
+                { icon: Zap,       title: "DevOps Solutions",       desc: "Streamlined CI/CD pipelines and cloud infrastructure that scale with you." },
               ].map((service, index) => (
-                <Card
+                <Link
                   key={index}
-                  data-aos="flip-left"
-                  data-aos-delay={index * 100}
-                  className="p-6 transition-all duration-700 hover:shadow-2xl hover:-translate-y-2 group border-border bg-card"
+                  href="/services"
+                  data-aos="fade-up"
+                  data-aos-delay={index * 80}
+                  className="group relative flex flex-col gap-5 rounded-3xl border border-border p-7 overflow-hidden cursor-pointer h-52 bg-card hover:border-primary/40 hover:shadow-[0_8px_40px_rgba(0,0,0,0.12)] dark:hover:shadow-[0_8px_40px_rgba(0,0,0,0.5)]"
+                  style={{
+                    transition: "border-color 0.7s ease, box-shadow 0.7s ease",
+                  }}
                 >
-                  <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mb-4 group-hover:bg-primary/20 transition-all duration-700">
-                    <service.icon className="w-6 h-6 text-primary" />
+                  {/* large faded number */}
+                  <span className="pointer-events-none absolute -right-2 -top-4 select-none text-[7rem] font-black leading-none text-foreground/[0.04] transition-all duration-500 group-hover:text-primary/10">
+                    {String(index + 1).padStart(2, "0")}
+                  </span>
+
+                  {/* top row: icon + arrow */}
+                  <div className="flex items-start justify-between">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/10 text-primary group-hover:bg-primary group-hover:text-white group-hover:scale-110" style={{ transition: "background 0.5s ease, color 0.5s ease, transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1)" }}>
+                      <service.icon className="h-5 w-5" />
+                    </div>
+                    <ArrowRight className="h-4 w-4 text-muted-foreground/30 transition-all duration-500 group-hover:text-primary group-hover:translate-x-1 group-hover:-translate-y-0.5" />
                   </div>
-                  <h3 className="text-xl font-semibold mb-3">{service.title}</h3>
-                  <p className="text-muted-foreground text-pretty">{service.description}</p>
-                </Card>
+
+                  {/* text */}
+                  <div>
+                    <h3 className="mb-2 text-lg font-bold tracking-tight text-foreground">{service.title}</h3>
+                    <p className="text-sm leading-relaxed text-muted-foreground line-clamp-2">{service.desc}</p>
+                  </div>
+
+                  {/* animated bottom line */}
+                  <div className="absolute bottom-0 left-0 h-px w-0 bg-linear-to-r from-primary to-primary/20 group-hover:w-full" style={{ transition: "width 0.7s cubic-bezier(0.34, 1.56, 0.64, 1)" }} />
+                </Link>
               ))}
             </div>
 
@@ -373,17 +360,18 @@ export default function HomePage() {
           </div>
         </section>
 
+        <div className="border-t border-border/25" />
+
         {/* User Feedback Section */}
         <UserFeedback />
 
+        <div className="border-t border-border/25" />
+
         {/* Team Members Section */}
         {teamMembers.length > 0 && (
-          <section className="py-32 sm:py-40 bg-muted/30">
+          <section id="team" className="py-16 sm:py-24 bg-muted/30">
             <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-              <div className="max-w-3xl mx-auto text-center mb-20" data-aos="fade-up">
-                <div className="inline-block px-4 py-2 bg-primary/10 rounded-full text-sm text-primary mb-6">
-                  Our Team
-                </div>
+              <div className="max-w-3xl mx-auto text-center mb-12" data-aos="fade-up">
                 <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-8 text-balance">
                   The People Behind ZENO TEKK
                 </h2>
@@ -398,7 +386,9 @@ export default function HomePage() {
                     key={member.id}
                     data-aos="fade-up"
                     data-aos-delay={index * 100}
-                    className="p-6 sm:p-8 text-center transition-all duration-700 hover:shadow-2xl hover:-translate-y-2 group border-border bg-card"
+                    glow
+                    glowProps={homeCardGlow}
+                    className="h-full p-6 sm:p-8 text-center transition-all duration-700 hover:-translate-y-2 group"
                   >
                     <div className="w-24 h-24 rounded-full overflow-hidden mx-auto mb-5 ring-4 ring-primary/10 group-hover:ring-primary/30 transition-all duration-700">
                       <img
@@ -456,128 +446,6 @@ export default function HomePage() {
           </section>
         )}
 
-        {/* Contact Form Section */}
-        <section className="py-32 sm:py-40">
-          <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="max-w-2xl mx-auto">
-              <div className="text-center mb-14" data-aos="fade-up">
-                <div className="inline-block px-4 py-2 bg-primary/10 rounded-full text-sm text-primary mb-6">
-                  Get In Touch
-                </div>
-                <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-6 text-balance">
-                  Let's Build Something Together
-                </h2>
-                <p className="text-lg sm:text-xl text-muted-foreground text-pretty">
-                  Have a project in mind? Drop us a message and we'll get back to you.
-                </p>
-              </div>
-
-              <Card className="p-8 sm:p-10" data-aos="fade-up" data-aos-delay="100">
-                {submitted ? (
-                  <div className="text-center py-8 space-y-4">
-                    <CheckCircle2 className="w-16 h-16 text-primary mx-auto" />
-                    <h3 className="text-2xl font-bold">Message Sent!</h3>
-                    <p className="text-muted-foreground">
-                      Thanks for reaching out. We'll get back to you as soon as possible.
-                    </p>
-                    <Button variant="outline" onClick={() => setSubmitted(false)} className="mt-4">
-                      Send Another Message
-                    </Button>
-                  </div>
-                ) : (
-                  <form onSubmit={handleContactSubmit} className="space-y-5">
-                    <div className="grid sm:grid-cols-2 gap-5">
-                      <div className="space-y-2">
-                        <label className="text-sm font-medium">Your Name</label>
-                        <Input
-                          placeholder="John Doe"
-                          value={contactForm.name}
-                          onChange={(e) => setContactForm((prev) => ({ ...prev, name: e.target.value }))}
-                          required
-                        />
-                      </div>
-                      <div className="space-y-2">
-                        <label className="text-sm font-medium">Email Address</label>
-                        <Input
-                          type="email"
-                          placeholder="john@example.com"
-                          value={contactForm.email}
-                          onChange={(e) => setContactForm((prev) => ({ ...prev, email: e.target.value }))}
-                          required
-                        />
-                      </div>
-                    </div>
-                    <div className="space-y-2">
-                      <label className="text-sm font-medium">Subject</label>
-                      <Input
-                        placeholder="What's this about?"
-                        value={contactForm.subject}
-                        onChange={(e) => setContactForm((prev) => ({ ...prev, subject: e.target.value }))}
-                        required
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <label className="text-sm font-medium">Message</label>
-                      <Textarea
-                        placeholder="Tell us about your project or ask us anything..."
-                        rows={5}
-                        value={contactForm.message}
-                        onChange={(e) => setContactForm((prev) => ({ ...prev, message: e.target.value }))}
-                        required
-                      />
-                    </div>
-                    <Button
-                      type="submit"
-                      size="lg"
-                      className="w-full transition-all duration-500 hover:scale-[1.02] hover:shadow-lg"
-                      disabled={isSubmitting}
-                    >
-                      {isSubmitting ? (
-                        "Sending..."
-                      ) : (
-                        <>
-                          Send Message
-                          <Send className="ml-2 w-4 h-4" />
-                        </>
-                      )}
-                    </Button>
-                  </form>
-                )}
-              </Card>
-            </div>
-          </div>
-        </section>
-
-        {/* CTA Section */}
-        <section className="py-32 sm:py-40" data-aos="fade-up">
-          <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-            <Card className="p-12 sm:p-16 md:p-20 text-center bg-linear-to-br from-primary/10 to-accent/10 border-primary/20 transition-all duration-700 hover:shadow-2xl">
-              <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-8 text-balance">
-                Ready to Build Something Amazing?
-              </h2>
-              <p className="text-lg sm:text-xl text-muted-foreground mb-10 max-w-2xl mx-auto text-pretty">
-                Let's transform your ideas into reality. Contact us today to start your project.
-              </p>
-              <div className="flex flex-col sm:flex-row gap-6 justify-center">
-                <Link href="/contact">
-                  <Button size="lg" className="transition-all duration-500 hover:scale-105 hover:shadow-lg">
-                    Get Started Now
-                    <ArrowRight className="ml-2 w-4 h-4" />
-                  </Button>
-                </Link>
-                <Link href="/products">
-                  <Button
-                    size="lg"
-                    variant="outline"
-                    className="transition-all duration-500 hover:scale-105 hover:shadow-lg bg-transparent"
-                  >
-                    View Portfolio
-                  </Button>
-                </Link>
-              </div>
-            </Card>
-          </div>
-        </section>
 
         <Footer />
       </div>

@@ -1,32 +1,114 @@
 "use client"
 
-import { useEffect } from "react"
-import { Card } from "@/components/ui/card"
+import { useEffect, useState } from "react"
+import { ArrowRight, Calendar, User, Newspaper, BookOpen } from "lucide-react"
+import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { ArrowRight, Calendar, Clock, User, BookOpen } from "lucide-react"
+import { Card, CardContent } from "@/components/ui/card"
 import { Navbar } from "@/components/navbar"
 import { Footer } from "@/components/footer"
 import { useBlogPosts } from "@/hooks/useApi"
 import type { BlogPost } from "@/hooks/useApi"
 
 const defaultPosts: BlogPost[] = [
-  { id: 0, title: "The Future of AI in Software Development", excerpt: "Exploring how artificial intelligence is revolutionizing the way we build and maintain software applications.", author: "Lesly Ndizeye", category: "AI & ML", image: "/ai-software-development.jpg", readTime: "5 min read", isFeatured: true, isActive: true, order: 0, content: "", createdAt: "2025-01-15T00:00:00Z", updatedAt: "2025-01-15T00:00:00Z" },
-  { id: 1, title: "Building Scalable Web Applications with Next.js", excerpt: "A comprehensive guide to creating high-performance, scalable web applications using the Next.js framework.", author: "ZENO TEKK Team", category: "Web Development", image: "/nextjs-web-development.jpg", readTime: "8 min read", isFeatured: false, isActive: true, order: 1, content: "", createdAt: "2025-01-10T00:00:00Z", updatedAt: "2025-01-10T00:00:00Z" },
-  { id: 2, title: "Mobile App Development Best Practices", excerpt: "Essential tips and strategies for building successful mobile applications that users love.", author: "ZENO TEKK Team", category: "Mobile", image: "/mobile-app-development.png", readTime: "6 min read", isFeatured: false, isActive: true, order: 2, content: "", createdAt: "2025-01-05T00:00:00Z", updatedAt: "2025-01-05T00:00:00Z" },
-  { id: 3, title: "Understanding Cloud Architecture", excerpt: "A deep dive into modern cloud architecture patterns and how to implement them effectively.", author: "ZENO TEKK Team", category: "Cloud", image: "/cloud-architecture.png", readTime: "10 min read", isFeatured: false, isActive: true, order: 3, content: "", createdAt: "2024-12-28T00:00:00Z", updatedAt: "2024-12-28T00:00:00Z" },
-  { id: 4, title: "UI/UX Design Trends for 2025", excerpt: "Discover the latest design trends that are shaping the future of user interfaces and experiences.", author: "ZENO TEKK Team", category: "Design", image: "/ui-ux-design-trends.png", readTime: "7 min read", isFeatured: false, isActive: true, order: 4, content: "", createdAt: "2024-12-20T00:00:00Z", updatedAt: "2024-12-20T00:00:00Z" },
-  { id: 5, title: "DevOps: Streamlining Your Development Pipeline", excerpt: "Learn how to implement DevOps practices to improve your development workflow and deployment process.", author: "ZENO TEKK Team", category: "DevOps", image: "/devops-pipeline.png", readTime: "9 min read", isFeatured: false, isActive: true, order: 5, content: "", createdAt: "2024-12-15T00:00:00Z", updatedAt: "2024-12-15T00:00:00Z" },
+  { id: 0, title: "How ZENO TEKK Helps Startups Launch Faster with Custom Web Apps", excerpt: "From idea to live product — we partner with early-stage startups to design, build, and deploy web applications that are ready to scale from day one.", author: "Lesly Ndizeye", category: "Web Development", image: "https://images.pexels.com/photos/3183150/pexels-photo-3183150.jpeg", readTime: "5 min read", isFeatured: true, isActive: true, order: 0, content: "", createdAt: "2025-03-10T00:00:00Z" },
+  { id: 1, title: "Why Small Businesses Need a Professional Mobile App in 2025", excerpt: "A mobile app is no longer just for big corporations. We show how small businesses are gaining a competitive edge by going digital with ZENO TEKK.", author: "ZENO TEKK Team", category: "Mobile Apps", image: "https://images.pexels.com/photos/1181244/pexels-photo-1181244.jpeg", readTime: "6 min read", isFeatured: false, isActive: true, order: 1, content: "", createdAt: "2025-02-20T00:00:00Z" },
+  { id: 2, title: "Enterprise Partnerships: Building at Scale with ZENO TEKK", excerpt: "Large companies trust us to deliver robust, high-performance digital platforms. Here's how we approach enterprise-grade projects from architecture to deployment.", author: "ZENO TEKK Team", category: "Enterprise", image: "https://images.pexels.com/photos/3182812/pexels-photo-3182812.jpeg", readTime: "8 min read", isFeatured: false, isActive: true, order: 2, content: "", createdAt: "2025-02-05T00:00:00Z" },
+  { id: 3, title: "From Vision to Launch: Our End-to-End App Development Process", excerpt: "We walk you through every phase of how ZENO TEKK takes a client idea — from the first wireframe to a fully deployed, live application.", author: "Lesly Ndizeye", category: "Process", image: "https://images.pexels.com/photos/3182773/pexels-photo-3182773.jpeg", readTime: "7 min read", isFeatured: false, isActive: true, order: 3, content: "", createdAt: "2025-01-18T00:00:00Z" },
+  { id: 4, title: "The Power of a Great Website: What We Build for Our Clients", excerpt: "Your website is your most powerful sales tool. We design and develop sites that convert visitors into customers — for companies of every size.", author: "ZENO TEKK Team", category: "Design & Web", image: "https://images.pexels.com/photos/196644/pexels-photo-196644.jpeg", readTime: "5 min read", isFeatured: false, isActive: true, order: 4, content: "", createdAt: "2025-01-05T00:00:00Z" },
+  { id: 5, title: "Collaborating Across Borders: How ZENO TEKK Works with Global Clients", excerpt: "Distance is no barrier. We've built long-term partnerships with companies across Africa, Europe, and beyond — delivering on time, every time.", author: "ZENO TEKK Team", category: "Partnership", image: "https://images.pexels.com/photos/3184418/pexels-photo-3184418.jpeg", readTime: "6 min read", isFeatured: false, isActive: true, order: 5, content: "", createdAt: "2024-12-20T00:00:00Z" },
 ]
 
 function formatDate(dateStr: string) {
   return new Date(dateStr).toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" })
 }
 
+function BlogPostCard({ post, i }: { post: BlogPost; i: number }) {
+  const [hovered, setHovered] = useState(false)
+
+  return (
+    <div
+      data-aos="fade-up"
+      data-aos-delay={String(i * 100)}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+    >
+      <Card className="cursor-pointer border-none bg-transparent shadow-none">
+        {/* Image */}
+        <div className="relative aspect-video rounded-2xl overflow-hidden mb-4 border border-border transition-shadow duration-300"
+          style={{ boxShadow: hovered ? "0 20px 40px -12px rgba(0,0,0,0.2)" : "" }}
+        >
+          <img
+            src={post.image || "/placeholder.svg"}
+            alt={post.title}
+            loading="lazy"
+            className="w-full h-full object-cover"
+            style={{
+              filter: hovered ? "grayscale(0)" : "grayscale(1)",
+              transform: hovered ? "scale(1.08)" : "scale(1)",
+              transition: "transform 0.7s cubic-bezier(0.34, 1.56, 0.64, 1), filter 0.5s ease",
+              willChange: "transform, filter",
+            }}
+          />
+          <div className="absolute top-4 left-4">
+            <Badge className="bg-zinc-950/80 backdrop-blur-md border-white/20 text-white font-black uppercase tracking-[0.2em] px-3 py-1 rounded-full text-[9px]">
+              {post.category}
+            </Badge>
+          </div>
+          <div
+            className="absolute inset-0 bg-linear-to-t from-black/60 to-transparent"
+            style={{ opacity: hovered ? 1 : 0, transition: "opacity 0.3s ease" }}
+          />
+        </div>
+
+        {/* Content */}
+        <CardContent className="px-1">
+          <div className="flex items-center gap-4 mb-3">
+            <div className="flex items-center gap-1.5">
+              <Calendar className="w-3 h-3 text-muted-foreground" />
+              <span className="text-[10px] uppercase font-black tracking-widest text-muted-foreground">
+                {formatDate(post.createdAt)}
+              </span>
+            </div>
+            <div className="flex items-center gap-1.5">
+              <User className="w-3 h-3 text-muted-foreground" />
+              <span className="text-[10px] uppercase font-black tracking-widest text-muted-foreground">
+                {post.author}
+              </span>
+            </div>
+          </div>
+
+          <h3
+            className="text-lg font-black mb-2 tracking-tight leading-snug"
+            style={{ color: hovered ? "var(--primary)" : "", transition: "color 0.3s ease" }}
+          >
+            {post.title}
+          </h3>
+
+          <p className="text-muted-foreground text-sm leading-relaxed mb-4 italic line-clamp-2">
+            &ldquo;{post.excerpt}&rdquo;
+          </p>
+
+          <div
+            className="flex items-center text-primary"
+            style={{ gap: hovered ? "16px" : "8px", transition: "gap 0.3s ease" }}
+          >
+            <span className="text-[9px] font-black uppercase tracking-[0.2em]">Read Article</span>
+            <div
+              className="h-px bg-primary/30"
+              style={{ width: hovered ? "48px" : "28px", transition: "width 0.3s ease" }}
+            />
+            <ArrowRight className="w-3 h-3" />
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+  )
+}
+
 export default function BlogPage() {
   const { posts, isLoading } = useBlogPosts()
   const displayPosts = posts.length > 0 ? posts : defaultPosts
-  const featuredPost = displayPosts.find((p) => p.isFeatured) || displayPosts[0]
-  const restPosts = displayPosts.filter((p) => p.id !== featuredPost?.id)
 
   useEffect(() => {
     const initAOS = async () => {
@@ -42,172 +124,99 @@ export default function BlogPage() {
     <div className="min-h-screen bg-background text-foreground">
       <Navbar />
 
-      {/* Hero Section */}
-      <section className="relative pt-32 pb-20 overflow-hidden">
-        <div className="absolute inset-0 overflow-hidden">
-          <div className="absolute top-1/4 -left-1/4 w-96 h-96 bg-primary/20 rounded-full blur-3xl animate-pulse" style={{ animationDuration: "4s" }} />
-          <div className="absolute bottom-1/4 -right-1/4 w-96 h-96 bg-accent/20 rounded-full blur-3xl animate-pulse" style={{ animationDuration: "6s", animationDelay: "1s" }} />
-        </div>
-        <div className="container mx-auto px-6 relative z-10">
-          <div className="max-w-4xl mx-auto text-center" data-aos="fade-up">
-            <div className="inline-block px-4 py-2 bg-primary/10 rounded-full text-sm text-primary mb-4">Our Blog</div>
-            <h1 className="text-5xl md:text-6xl font-bold mb-6 text-balance">
-              Insights & <span className="text-primary">Tech Articles</span>
-            </h1>
-            <p className="text-xl text-muted-foreground text-pretty">
-              Stay updated with the latest trends, tutorials, and insights from the world of software development.
-            </p>
+      <section className="py-24 bg-background px-4 pt-36">
+        <div className="container mx-auto">
+
+          {/* Header */}
+          <div className="flex flex-col md:flex-row justify-between items-end mb-20 gap-8">
+            <div className="max-w-2xl text-center md:text-left">
+              <div
+                data-aos="fade-right"
+                className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 mb-6"
+              >
+                <Newspaper className="w-3 h-3 text-primary" />
+                <span className="text-[10px] font-black uppercase tracking-widest text-primary"> & News</span>
+              </div>
+              <h2 className="text-4xl md:text-6xl font-black tracking-tighter leading-[0.9] mb-4">
+                From the{" "}
+                <span className="text-primary italic underline decoration-primary/20 underline-offset-8">
+                  workshop.
+                </span>
+              </h2>
+              <p className="text-muted-foreground text-sm max-w-lg mt-6">
+                Stay up to date with the latest industry trends, technical deep dives, and product updates from our engineering team.
+              </p>
+            </div>
+            <div>
+              <Button
+                size="lg"
+                className="bg-zinc-950 dark:bg-white dark:text-zinc-950 text-white border-white/10 rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] hover:bg-zinc-900 hover:scale-[1.02] active:scale-[0.98] transition-transform shadow-xl shadow-black/20"
+              >
+                View All Articles
+                <ArrowRight className="w-4 h-4 ml-3" />
+              </Button>
+            </div>
           </div>
+
+          {/* Posts */}
+          {isLoading ? (
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+              {[...Array(2)].map((_, i) => (
+                <div key={i} className="animate-pulse space-y-6">
+                  <div className="aspect-16/10 rounded-[3rem] bg-muted" />
+                  <div className="px-4 space-y-4">
+                    <div className="h-4 bg-muted rounded w-1/2" />
+                    <div className="h-8 bg-muted rounded w-3/4" />
+                    <div className="h-4 bg-muted rounded w-full" />
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : displayPosts.length === 0 ? (
+            <div className="py-32 text-center">
+              <BookOpen className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
+              <h3 className="text-xl font-semibold">No posts yet</h3>
+              <p className="text-muted-foreground mt-2">Check back soon for articles.</p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {displayPosts.map((post, i) => (
+                <BlogPostCard key={post.id} post={post} i={i} />
+              ))}
+            </div>
+          )}
         </div>
       </section>
 
-      {isLoading ? (
-        <section className="py-20">
-          <div className="container mx-auto px-6 space-y-8">
-            <Card className="h-80 animate-pulse" />
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {[...Array(3)].map((_, i) => <Card key={i} className="h-64 animate-pulse" />)}
+      {/* Newsletter */}
+      <section className="py-24 px-4 dark:bg-black">
+        <div className="container mx-auto">
+          <div className="relative overflow-hidden rounded-[2.5rem] border border-white/10 bg-zinc-950 shadow-2xl group">
+            <div className="absolute -left-32 -top-32 h-64 w-64 rounded-full bg-primary/20 blur-[100px] group-hover:scale-150 transition-transform duration-1000" />
+            <div className="absolute -bottom-32 -right-32 h-64 w-64 rounded-full bg-primary/10 blur-[100px]" />
+            <div className="relative z-10 p-8 md:p-12 flex flex-col md:flex-row items-center justify-between gap-10">
+              <div className="text-center md:text-left">
+                <p className="text-xs font-semibold uppercase tracking-[0.25em] text-primary mb-4">Stay in the loop</p>
+                <h2 className="text-3xl md:text-4xl font-black text-white mb-4 tracking-tighter">
+                  Subscribe to Our <br /> Newsletter
+                </h2>
+                <p className="text-zinc-400 text-sm max-w-sm">
+                  Get the latest articles, tutorials, and tech insights delivered directly to your inbox.
+                </p>
+              </div>
+              <div className="shrink-0 flex flex-col sm:flex-row gap-3 w-full md:w-auto">
+                <input
+                  type="email"
+                  placeholder="Enter your email"
+                  className="flex-1 md:w-64 px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder:text-zinc-500 focus:outline-none focus:ring-2 focus:ring-primary text-sm"
+                />
+                <Button size="lg" className="bg-white text-black hover:bg-white/90 font-black rounded-2xl shadow-xl text-[10px] uppercase tracking-widest gap-3 h-14 px-8 whitespace-nowrap">
+                  Subscribe
+                  <ArrowRight className="w-4 h-4" />
+                </Button>
+              </div>
             </div>
           </div>
-        </section>
-      ) : displayPosts.length === 0 ? (
-        <section className="py-32 text-center">
-          <BookOpen className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
-          <h3 className="text-xl font-semibold">No posts yet</h3>
-          <p className="text-muted-foreground mt-2">Check back soon for articles.</p>
-        </section>
-      ) : (
-        <>
-          {/* Featured Post */}
-          <section className="py-20">
-            <div className="container mx-auto px-6">
-              <Card data-aos="fade-up" className="overflow-hidden border-border bg-card hover:shadow-2xl transition-all duration-300">
-                <div className="grid md:grid-cols-2 gap-0">
-                  <div className="relative h-64 md:h-auto">
-                    <img
-                      src={featuredPost.image || "/placeholder.svg"}
-                      alt={featuredPost.title}
-                      className="w-full h-full object-cover"
-                      loading="lazy"
-                    />
-                    <div className="absolute top-4 left-4">
-                      <span className="px-3 py-1 bg-primary text-primary-foreground text-xs rounded-full font-semibold">
-                        Featured
-                      </span>
-                    </div>
-                  </div>
-                  <div className="p-8 md:p-12 flex flex-col justify-center">
-                    <span className="px-3 py-1 bg-primary/10 text-primary text-xs rounded-full font-semibold w-fit mb-4">
-                      {featuredPost.category}
-                    </span>
-                    <h2 className="text-3xl md:text-4xl font-bold mb-4 text-balance">{featuredPost.title}</h2>
-                    <p className="text-muted-foreground mb-6 text-pretty">{featuredPost.excerpt}</p>
-                    <div className="flex items-center gap-4 text-sm text-muted-foreground mb-6 flex-wrap">
-                      <div className="flex items-center gap-2">
-                        <User className="w-4 h-4" />
-                        {featuredPost.author}
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <Calendar className="w-4 h-4" />
-                        {formatDate(featuredPost.createdAt)}
-                      </div>
-                      {featuredPost.readTime && (
-                        <div className="flex items-center gap-2">
-                          <Clock className="w-4 h-4" />
-                          {featuredPost.readTime}
-                        </div>
-                      )}
-                    </div>
-                    <Button className="w-fit group">
-                      Read Article
-                      <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                    </Button>
-                  </div>
-                </div>
-              </Card>
-            </div>
-          </section>
-
-          {/* Blog Grid */}
-          {restPosts.length > 0 && (
-            <section className="py-20 bg-muted/30">
-              <div className="container mx-auto px-6">
-                <div className="mb-12" data-aos="fade-up">
-                  <h2 className="text-3xl md:text-4xl font-bold mb-4">Latest Articles</h2>
-                  <p className="text-muted-foreground">Explore our recent posts and stay informed.</p>
-                </div>
-                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-                  {restPosts.map((post, index) => (
-                    <Card
-                      key={post.id}
-                      data-aos="fade-up"
-                      data-aos-delay={index * 100}
-                      className="overflow-hidden group hover:shadow-xl transition-all duration-300 border-border bg-card p-0"
-                    >
-                      <div className="relative h-48 overflow-hidden">
-                        <img
-                          src={post.image || "/placeholder.svg"}
-                          alt={post.title}
-                          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                          loading="lazy"
-                        />
-                        <div className="absolute top-4 left-4">
-                          <span className="px-3 py-1 bg-primary/90 text-primary-foreground text-xs rounded-full font-semibold">
-                            {post.category}
-                          </span>
-                        </div>
-                      </div>
-                      <div className="p-6">
-                        <h3 className="text-xl font-bold mb-3 group-hover:text-primary transition-colors text-balance">
-                          {post.title}
-                        </h3>
-                        <p className="text-sm text-muted-foreground mb-4 text-pretty">{post.excerpt}</p>
-                        <div className="flex items-center gap-3 text-xs text-muted-foreground mb-4 flex-wrap">
-                          <div className="flex items-center gap-1">
-                            <Calendar className="w-3 h-3" />
-                            {formatDate(post.createdAt)}
-                          </div>
-                          {post.readTime && (
-                            <div className="flex items-center gap-1">
-                              <Clock className="w-3 h-3" />
-                              {post.readTime}
-                            </div>
-                          )}
-                        </div>
-                        <Button variant="ghost" size="sm" className="group/btn p-0">
-                          Read More
-                          <ArrowRight className="ml-2 w-4 h-4 group-hover/btn:translate-x-1 transition-transform" />
-                        </Button>
-                      </div>
-                    </Card>
-                  ))}
-                </div>
-              </div>
-            </section>
-          )}
-        </>
-      )}
-
-      {/* Newsletter Section */}
-      <section className="py-32" data-aos="fade-up">
-        <div className="container mx-auto px-6">
-          <Card className="p-12 md:p-16 text-center bg-gradient-to-br from-primary/10 to-accent/10 border-primary/20">
-            <h2 className="text-4xl md:text-5xl font-bold mb-6 text-balance">Subscribe to Our Newsletter</h2>
-            <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto text-pretty">
-              Get the latest articles, tutorials, and tech insights delivered directly to your inbox.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center max-w-md mx-auto">
-              <input
-                type="email"
-                placeholder="Enter your email"
-                className="flex-1 px-4 py-3 bg-background border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
-              />
-              <Button size="lg">
-                Subscribe
-                <ArrowRight className="ml-2 w-4 h-4" />
-              </Button>
-            </div>
-          </Card>
         </div>
       </section>
 
