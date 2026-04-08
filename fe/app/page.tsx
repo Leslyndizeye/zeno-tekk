@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import React, { useEffect, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -45,6 +45,42 @@ interface HeroContent {
   ctaButton1Url: string
   ctaButton2Text: string
   ctaButton2Url: string
+}
+
+function FoundationCard({ icon: Icon, title, description, index }: { icon: React.ElementType; title: string; description: string; index: number }) {
+  const [hovered, setHovered] = useState(false)
+  return (
+    <Card
+      data-aos="fade-up"
+      data-aos-delay={(index + 1) * 100}
+      className="relative h-full overflow-hidden border-border/40 bg-muted/5 p-0 cursor-default"
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      style={{
+        boxShadow: hovered ? "0 20px 40px -12px rgba(0,0,0,0.18)" : "none",
+        transform: hovered ? "translateY(-4px)" : "translateY(0)",
+        transition: "box-shadow 0.7s ease, transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1)",
+      }}
+    >
+      <div className="absolute -right-12 -top-12 h-24 w-24 rounded-full bg-primary/5 blur-2xl" />
+      <div className="relative flex h-full flex-col p-8">
+        <div className="mb-6 flex items-center gap-4">
+          <div
+            className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10"
+            style={{
+              transform: hovered ? "scale(1.12)" : "scale(1)",
+              transition: "transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1)",
+            }}
+          >
+            <Icon className="h-5 w-5 text-primary" />
+          </div>
+          <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">{title}</span>
+        </div>
+        <h3 className="mb-3 text-2xl font-black tracking-tight">{title}</h3>
+        <p className="text-muted-foreground text-pretty leading-relaxed">{description}</p>
+      </div>
+    </Card>
+  )
 }
 
 export default function HomePage() {
@@ -159,24 +195,7 @@ export default function HomePage() {
                   { icon: Eye,    title: "Our Vision",  description: "To become a global leader in software development, recognized for delivering cutting-edge solutions that shape the future of technology and business innovation." },
                   { icon: Heart,  title: "Our Values",  description: "Excellence, integrity, innovation, and client success. We believe in building lasting partnerships through transparency, quality, and continuous improvement." },
                 ].map((item, index) => (
-                  <Card
-                    key={item.title}
-                    data-aos="fade-up"
-                    data-aos-delay={(index + 1) * 100}
-                    className="group relative h-full overflow-hidden border-border/40 bg-muted/5 p-0 transition-all duration-500 hover:-translate-y-1 hover:bg-muted/10"
-                  >
-                    <div className="absolute -right-12 -top-12 h-24 w-24 rounded-full bg-primary/5 blur-2xl transition-all duration-500 group-hover:bg-primary/10" />
-                    <div className="relative flex h-full flex-col p-8">
-                      <div className="mb-6 flex items-center gap-4">
-                        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 transition-transform duration-500 group-hover:scale-110">
-                          <item.icon className="h-5 w-5 text-primary" />
-                        </div>
-                        <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">{item.title}</span>
-                      </div>
-                      <h3 className="mb-3 text-2xl font-black tracking-tight">{item.title}</h3>
-                      <p className="text-muted-foreground text-pretty leading-relaxed">{item.description}</p>
-                    </div>
-                  </Card>
+                  <FoundationCard key={item.title} icon={item.icon} title={item.title} description={item.description} index={index} />
                 ))}
             </div>
           </div>
