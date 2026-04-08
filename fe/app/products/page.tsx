@@ -279,7 +279,7 @@ export default function ProductsPage() {
     <div className="min-h-screen bg-background text-foreground">
       <Navbar />
 
-      <section className="relative overflow-hidden pb-18 pt-32">
+      <section className="relative overflow-hidden pb-18 pt-32 bg-black">
         <div className="absolute inset-0 overflow-hidden">
           <div
             className="absolute -left-1/4 top-1/4 h-96 w-96 rounded-full bg-primary/20 blur-3xl animate-pulse"
