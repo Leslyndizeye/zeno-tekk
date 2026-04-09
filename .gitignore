@@ -29,4 +29,5 @@ next-env.d.ts
 
 # extra 
 /backend/node_modules/
+/backend/dist/
 .codex
