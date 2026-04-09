@@ -7,8 +7,8 @@ export function Footer() {
   return (
     <footer className="border-t border-border bg-white text-foreground dark:border-white/10 dark:bg-black">
       <div className="container mx-auto px-6 py-16">
-        <div className="mb-12 grid gap-12 md:grid-cols-2 lg:grid-cols-4">
-          <div className="space-y-4" data-aos="fade-up">
+        <div className="mb-12 grid grid-cols-2 gap-x-6 gap-y-12 md:grid-cols-2 lg:grid-cols-4">
+          <div className="col-span-2 space-y-4 lg:col-span-1" data-aos="fade-up">
             <div className="flex items-center gap-2">
               <div className="flex w-28 items-center justify-center rounded-xl">
                 <img src="logo.png" alt="" />
@@ -65,7 +65,7 @@ export function Footer() {
             </ul>
           </div>
 
-          <div data-aos="fade-up" data-aos-delay="300">
+          <div className="col-span-2 lg:col-span-1" data-aos="fade-up" data-aos-delay="300">
             <h3 className="mb-4 text-lg font-semibold">Connect With Us</h3>
             <p className="mb-4 text-sm text-muted-foreground">Follow us on social media for updates and insights.</p>
             <div className="grid grid-cols-4 gap-3">
