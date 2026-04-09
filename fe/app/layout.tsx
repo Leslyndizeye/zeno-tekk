@@ -15,8 +15,12 @@ export const metadata: Metadata = {
   description: "Transform ideas into innovative software. Custom development, AI solutions, and modern applications.",
   generator: "v0.app",
   icons: {
-    icon: "/logo-icon.png",
+    icon: [
+      { url: "/favicon.ico", sizes: "any" },
+      { url: "/logo-icon.png", type: "image/png" },
+    ],
     apple: "/logo-icon.png",
+    shortcut: "/favicon.ico",
   },
 }
 
