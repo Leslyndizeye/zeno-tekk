@@ -25,7 +25,7 @@ interface Service {
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
-const emptyForm = { title: "", description: "", icon: "", features: "", learnMore: "", order: 0 };
+const emptyForm = { title: "", description: "", icon: "", features: "", order: 0 };
 
 export default function ServicesPage() {
   const { data, mutate, isLoading } = useSWR<{ success: boolean; data: Service[] }>(
@@ -42,7 +42,7 @@ export default function ServicesPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const featuresArray = formData.features.split(",").map((f) => f.trim()).filter(Boolean);
-    const payload = { ...formData, features: featuresArray, order: Number(formData.order), learnMore: formData.learnMore || null };
+    const payload = { ...formData, features: featuresArray, order: Number(formData.order) };
 
     try {
       const url = editingId ? `${API_URL}/content/services/${editingId}` : `${API_URL}/content/services`;
@@ -73,7 +73,6 @@ export default function ServicesPage() {
       description: service.description,
       icon: service.icon,
       features: service.features.join(", "),
-      learnMore: service.learnMore || "",
       order: service.order,
     });
     setEditingId(service.id);
@@ -147,10 +146,6 @@ export default function ServicesPage() {
               <div>
                 <label className="text-sm font-medium">Features (comma-separated)</label>
                 <Textarea value={formData.features} onChange={(e) => setFormData({ ...formData, features: e.target.value })} placeholder="Feature 1, Feature 2, Feature 3" />
-              </div>
-              <div>
-                <label className="text-sm font-medium">Learn More Content <span className="text-muted-foreground text-xs">(shown in popup)</span></label>
-                <Textarea rows={5} value={formData.learnMore} onChange={(e) => setFormData({ ...formData, learnMore: e.target.value })} placeholder="Detailed description, benefits, process, etc. shown when visitor clicks Learn More..." />
               </div>
               <div>
                 <label className="text-sm font-medium">Order</label>

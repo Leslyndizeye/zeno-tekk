@@ -34,7 +34,7 @@ export const getAllServices = async (req: Request, res: Response) => {
 
 export const createService = async (req: CustomRequest, res: Response) => {
   try {
-    const { title, description, icon, features, order } = req.body;
+    const { title, description, icon, features, order, learnMore } = req.body;
 
     if (!title || !description || !icon) {
       return res.status(400).json({
@@ -49,6 +49,7 @@ export const createService = async (req: CustomRequest, res: Response) => {
       icon,
       features: features || [],
       order: order || 0,
+      learnMore: learnMore || null,
     });
 
     await serviceRepository.save(service);
@@ -71,7 +72,7 @@ export const createService = async (req: CustomRequest, res: Response) => {
 export const updateService = async (req: CustomRequest, res: Response) => {
   try {
     const { id } = req.params;
-    const { title, description, icon, features, isActive, order } = req.body;
+    const { title, description, icon, features, isActive, order, learnMore } = req.body;
 
     const service = await serviceRepository.findOne({ where: { id: Number(id) } });
 
@@ -85,6 +86,7 @@ export const updateService = async (req: CustomRequest, res: Response) => {
     if (features !== undefined) service.features = features;
     if (isActive !== undefined) service.isActive = isActive;
     if (order !== undefined) service.order = order;
+    if (learnMore !== undefined) service.learnMore = learnMore;
 
     await serviceRepository.save(service);
 

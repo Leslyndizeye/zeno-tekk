@@ -220,11 +220,6 @@ export default function ServicesPage() {
           </DialogHeader>
           <div className="mt-2 space-y-4">
             <p className="text-sm text-muted-foreground leading-relaxed">{activeService?.description}</p>
-            {activeService?.learnMore && (
-              <div className="border-t border-border/40 pt-4">
-                <p className="text-sm leading-relaxed text-foreground/80 whitespace-pre-line">{activeService.learnMore}</p>
-              </div>
-            )}
             {activeService?.features && activeService.features.length > 0 && (
               <div className="border-t border-border/40 pt-4">
                 <p className="text-xs font-black uppercase tracking-widest text-muted-foreground mb-3">What's included</p>

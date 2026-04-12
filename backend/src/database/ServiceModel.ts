@@ -17,6 +17,9 @@ export class Service {
   @Column({ type: "text", array: true, default: () => "ARRAY[]::text[]" })
   features!: string[];
 
+  @Column({ type: "text", nullable: true, default: null })
+  learnMore!: string | null;
+
   @Column({ default: true })
   isActive!: boolean;
 
