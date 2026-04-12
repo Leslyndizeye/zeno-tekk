@@ -4,11 +4,12 @@ import { useEffect, useRef, useState } from "react"
 import { Card } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { ArrowRight, ArrowUpRight, CheckCircle2, Pause, Play } from "lucide-react"
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import { ArrowRight, ArrowUpRight, CheckCircle2, Pause, Play, X } from "lucide-react"
 import { Navbar } from "@/components/navbar"
 import { Footer } from "@/components/footer"
 import Link from "next/link"
-import { useServices } from "@/hooks/useApi"
+import { useServices, type Service } from "@/hooks/useApi"
 import { useCardsReady } from "@/hooks/useCardsReady"
 import { ServicePageCardSkeleton } from "@/components/ui/card-skeleton"
 
@@ -63,11 +64,13 @@ function ServicePreviewCard({
   delay,
   backgroundImage,
   videoUrl,
+  onLearnMore,
 }: {
   service: typeof defaultServices[number]
   delay: number
   backgroundImage: string
   videoUrl: string
+  onLearnMore: () => void
 }) {
   const [isHovered, setIsHovered] = useState(false)
   const videoRef = useRef<HTMLVideoElement>(null)
@@ -160,6 +163,7 @@ function ServicePreviewCard({
           </Badge>
 
           <button
+            onClick={onLearnMore}
             className="group/btn relative flex items-center gap-2 overflow-hidden rounded-full border border-white/25 px-5 py-2 text-sm font-medium text-white backdrop-blur-sm"
             style={{
               background: isHovered ? "rgba(255,255,255,0.14)" : "rgba(255,255,255,0.04)",
@@ -192,6 +196,7 @@ export default function ServicesPage() {
   const { services, isLoading } = useServices()
   const cardsReady = useCardsReady(2000)
   const displayServices = services.length > 0 ? services : defaultServices
+  const [activeService, setActiveService] = useState<Service | null>(null)
 
   useEffect(() => {
     const initAOS = async () => {
@@ -206,6 +211,44 @@ export default function ServicesPage() {
   return (
     <div className="min-h-screen bg-background text-foreground">
       <Navbar />
+
+      {/* Learn More Popup */}
+      <Dialog open={!!activeService} onOpenChange={(open) => { if (!open) setActiveService(null) }}>
+        <DialogContent className="max-w-lg rounded-3xl border border-border bg-background p-8">
+          <DialogHeader>
+            <DialogTitle className="text-2xl font-black tracking-tight">{activeService?.title}</DialogTitle>
+          </DialogHeader>
+          <div className="mt-2 space-y-4">
+            <p className="text-sm text-muted-foreground leading-relaxed">{activeService?.description}</p>
+            {activeService?.learnMore && (
+              <div className="border-t border-border/40 pt-4">
+                <p className="text-sm leading-relaxed text-foreground/80 whitespace-pre-line">{activeService.learnMore}</p>
+              </div>
+            )}
+            {activeService?.features && activeService.features.length > 0 && (
+              <div className="border-t border-border/40 pt-4">
+                <p className="text-xs font-black uppercase tracking-widest text-muted-foreground mb-3">What's included</p>
+                <ul className="space-y-2">
+                  {activeService.features.map((f) => (
+                    <li key={f} className="flex items-center gap-2 text-sm text-foreground/80">
+                      <CheckCircle2 className="w-4 h-4 text-primary shrink-0" />
+                      {f}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+            <div className="pt-2">
+              <Link href="/contact">
+                <Button className="w-full h-11 rounded-xl font-black text-sm" onClick={() => setActiveService(null)}>
+                  Get Started
+                  <ArrowRight className="w-4 h-4 ml-2" />
+                </Button>
+              </Link>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
 
       {/* Services Grid */}
       <section className="pt-32 pb-20 dark:bg-black">
@@ -225,6 +268,7 @@ export default function ServicesPage() {
                   delay={index * 100}
                   backgroundImage={media.backgroundImage}
                   videoUrl={media.videoUrl}
+                  onLearnMore={() => setActiveService(service)}
                 />
               )
             })}
