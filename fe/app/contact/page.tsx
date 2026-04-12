@@ -103,7 +103,7 @@ export default function ContactPage() {
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 mb-20">
             {!cardsReady ? Array.from({ length: 4 }).map((_, i) => <ContactCardSkeleton key={i} />) : [
               { icon: Mail,  label: "Email Us",      value: "info@zenotekk.com",    desc: "Drop us a line anytime — we read every message." },
-              { icon: Phone, label: "Call Us",        value: "+250 788 123 456",     desc: "Available 24/7 — always someone on the line." },
+              { icon: Phone, label: "Call Us",        value: "+250 790 293 963",     desc: "Available 24/7 — always someone on the line." },
               { icon: MapPin,label: "Visit Us",       value: "Kigali, Rwanda",       desc: "KG 7 Ave, Kigali Heights." },
               { icon: Clock, label: "Always On",      value: "24 / 7",               desc: "We work around the clock, every day of the year." },
             ].map((item, index) => (
@@ -161,7 +161,7 @@ export default function ContactPage() {
                 <div className="space-y-6 flex-1">
                   {[
                     { icon: Mail,   label: "Email us",  value: "info@zenotekk.com" },
-                    { icon: Phone,  label: "Call us",   value: "+250 788 123 456" },
+                    { icon: Phone,  label: "Call us",   value: "+250 790 293 963" },
                     { icon: MapPin, label: "Visit us",  value: "Kigali Heights, Rwanda" },
                     { icon: Clock,  label: "Available", value: "24 / 7 — Always on" },
                   ].map(({ icon: Icon, label, value }) => (
@@ -252,7 +252,7 @@ export default function ContactPage() {
 
                 <div className="pt-2 flex items-center gap-3 text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
                   <MessageCircle className="w-4 h-4 text-primary shrink-0" />
-                  <span>Prefer a quick call? <a href="tel:+250788123456" className="underline text-foreground">+250 788 123 456</a> — available 24/7</span>
+                  <span>Prefer a quick call? <a href="tel:+250790293963" className="underline text-foreground">+250 790 293 963</a> — available 24/7</span>
                 </div>
               </form>
             </div>

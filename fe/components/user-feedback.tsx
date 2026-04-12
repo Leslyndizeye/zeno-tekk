@@ -17,7 +17,7 @@ const defaultTestimonials: TestimonialItem[] = [
     clientName: "Jean-Pierre Habimana",
     position: "CEO",
     clientCompany: "Kigali Ventures",
-    clientImage: "https://randomuser.me/api/portraits/men/5.jpg",
+    clientImage: "https://images.unsplash.com/photo-1531384441138-2736e62e0919?w=100&h=100&fit=crop&crop=face",
     rating: 5,
     content:
       "ZENO TEKK transformed our business with their innovative software solutions. Their team brought clarity, speed, and exceptional engineering quality from start to finish.",
@@ -29,7 +29,7 @@ const defaultTestimonials: TestimonialItem[] = [
     clientName: "Diane Mukasine",
     position: "CTO",
     clientCompany: "RwandaTech Hub",
-    clientImage: "https://randomuser.me/api/portraits/women/28.jpg",
+    clientImage: "https://images.unsplash.com/photo-1531123897727-8f129e1688ce?w=100&h=100&fit=crop&crop=face",
     rating: 5,
     content:
       "The platform they built for us improved customer engagement immediately. The product feels polished, scalable, and genuinely designed around our workflow.",
@@ -41,7 +41,7 @@ const defaultTestimonials: TestimonialItem[] = [
     clientName: "Eric Nkurunziza",
     position: "Founder",
     clientCompany: "Hanga Digital",
-    clientImage: "https://randomuser.me/api/portraits/men/14.jpg",
+    clientImage: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=face",
     rating: 5,
     content:
       "Working with ZENO TEKK was a game-changer. Their attention to detail, communication, and delivery pace made the entire build process smooth and reliable.",
@@ -53,7 +53,7 @@ const defaultTestimonials: TestimonialItem[] = [
     clientName: "Aline Umubyeyi",
     position: "Product Manager",
     clientCompany: "Irembo Solutions",
-    clientImage: "https://randomuser.me/api/portraits/women/40.jpg",
+    clientImage: "https://images.unsplash.com/photo-1567532939604-b6b5b0db2604?w=100&h=100&fit=crop&crop=face",
     rating: 5,
     content:
       "They delivered beyond our expectations. The final solution solved real operational problems and gave our business a much stronger digital foundation.",
@@ -65,7 +65,7 @@ const defaultTestimonials: TestimonialItem[] = [
     clientName: "Patrick Uwimana",
     position: "Co-Founder",
     clientCompany: "Norrsken Kigali",
-    clientImage: "https://randomuser.me/api/portraits/men/33.jpg",
+    clientImage: "https://images.unsplash.com/photo-1522529599102-193c0d76b5b6?w=100&h=100&fit=crop&crop=face",
     rating: 5,
     content:
       "From the first call to final delivery, ZENO TEKK was professional, fast, and genuinely invested in making our product succeed. Highly recommend.",
@@ -77,7 +77,7 @@ const defaultTestimonials: TestimonialItem[] = [
     clientName: "Claudine Ingabire",
     position: "Director",
     clientCompany: "BPR Digital",
-    clientImage: "https://randomuser.me/api/portraits/women/52.jpg",
+    clientImage: "https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?w=100&h=100&fit=crop&crop=face",
     rating: 5,
     content:
       "The team understood our vision immediately and translated it into a product that our users love. Delivery was on time and the quality was outstanding.",

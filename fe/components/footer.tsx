@@ -1,5 +1,13 @@
 import Link from "next/link"
-import { Facebook, Github, Globe, Instagram, Linkedin, Mail, Twitter, Youtube } from "lucide-react"
+import { Facebook, Globe, Instagram, Linkedin, Mail, Youtube } from "lucide-react"
+
+function XIcon({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} fill="currentColor" aria-hidden="true">
+      <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.747l7.73-8.835L1.254 2.25H8.08l4.259 5.622zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+    </svg>
+  )
+}
 
 export function Footer() {
   const currentYear = new Date().getFullYear()
@@ -68,20 +76,20 @@ export function Footer() {
           <div className="col-span-2 lg:col-span-1" data-aos="fade-up" data-aos-delay="300">
             <h3 className="mb-4 text-lg font-semibold">Connect With Us</h3>
             <p className="mb-4 text-sm text-muted-foreground">Follow us on social media for updates and insights.</p>
-            <div className="grid grid-cols-4 gap-3">
+            <div className="grid grid-cols-3 gap-3">
               {[
-                { icon: Github, href: "#", label: "GitHub" },
-                { icon: Linkedin, href: "#", label: "LinkedIn" },
-                { icon: Twitter, href: "#", label: "Twitter" },
-                { icon: Facebook, href: "#", label: "Facebook" },
-                { icon: Instagram, href: "#", label: "Instagram" },
-                { icon: Youtube, href: "#", label: "YouTube" },
-                { icon: Mail, href: "mailto:contact@zenotekk.com", label: "Email" },
-                { icon: Globe, href: "#", label: "Website" },
+                { icon: Linkedin,  href: "#",                                                                                      label: "LinkedIn" },
+                { icon: XIcon,     href: "https://x.com/Zenotekk",                                                                label: "X" },
+                { icon: Facebook,  href: "#",                                                                                      label: "Facebook" },
+                { icon: Instagram, href: "https://www.instagram.com/zenotekk/",                                                   label: "Instagram" },
+                { icon: Youtube,   href: "https://www.youtube.com/@zenotekk",                                                      label: "YouTube" },
+                { icon: Mail,      href: "https://mail.google.com/mail/?view=cm&to=info.zenotekk@gmail.com",                      label: "Email" },
               ].map((social, index) => (
                 <a
                   key={index}
                   href={social.href}
+                  target={social.href.startsWith("mailto") ? undefined : "_blank"}
+                  rel="noopener noreferrer"
                   aria-label={social.label}
                   className="group flex h-12 w-12 items-center justify-center rounded-xl border border-primary/10 bg-primary/5 transition-all duration-300 hover:-translate-y-1 hover:scale-110 hover:border-primary hover:bg-primary hover:text-primary-foreground dark:bg-primary/10"
                 >
@@ -100,13 +108,13 @@ export function Footer() {
             © {currentYear} ZENO TEKK. All rights reserved. Built with passion and innovation.
           </p>
           <div className="flex gap-6 text-sm">
-            <Link href="#" className="text-muted-foreground transition-colors duration-300 hover:text-primary">
+            <Link href="/privacy-policy" className="text-muted-foreground transition-colors duration-300 hover:text-primary">
               Privacy Policy
             </Link>
-            <Link href="#" className="text-muted-foreground transition-colors duration-300 hover:text-primary">
+            <Link href="/terms-of-service" className="text-muted-foreground transition-colors duration-300 hover:text-primary">
               Terms of Service
             </Link>
-            <Link href="#" className="text-muted-foreground transition-colors duration-300 hover:text-primary">
+            <Link href="/cookie-policy" className="text-muted-foreground transition-colors duration-300 hover:text-primary">
               Cookie Policy
             </Link>
           </div>
