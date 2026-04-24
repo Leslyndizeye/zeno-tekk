@@ -1,14 +1,10 @@
 import { DataSource } from "typeorm";
-import dotenv from "dotenv";
-
-dotenv.config();
-
-const isDev = process.env.NODE_ENV !== "production";
+import { databaseSslConfig, databaseUrl, isDev } from "./runtime";
 
 
 export const AppDataSource = new DataSource({
   type: "postgres",
-  url: process.env.DB_URL,
+  url: databaseUrl,
   synchronize: true,
   logging: false,
   entities: [isDev ? "src/database/**/*.ts" : "dist/database/**/*.js"],
@@ -16,8 +12,6 @@ export const AppDataSource = new DataSource({
   extra: {
     connectionTimeoutMillis: 30000, 
   },
-  ssl: {
-    rejectUnauthorized: true,
-  },
+  ...(databaseSslConfig ? { ssl: databaseSslConfig } : {}),
   schema: 'public',
 });

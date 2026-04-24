@@ -1,8 +1,8 @@
 import express from "express";
 import cors from "cors";
-import dotenv from "dotenv";
 import morgan from "morgan";
 import { AppDataSource } from "./config/db";
+import { databaseSslConfig, databaseUrl } from "./config/runtime";
 import session from "express-session";
 import router from "./routes";
 import "reflect-metadata";
@@ -13,13 +13,17 @@ import { initSocket } from "./socket/socket";
 
 const { Pool } = pg;
 
+if (!databaseUrl) {
+  console.error(
+    "Startup Error: missing database connection string. Set DB_URL or DATABASE_URL in the environment before starting the backend."
+  );
+  process.exit(1);
+}
+
 const pgPool = new Pool({
-  connectionString: process.env.DB_URL,
-  ssl: { rejectUnauthorized: true },
+  connectionString: databaseUrl,
+  ...(databaseSslConfig ? { ssl: databaseSslConfig } : {}),
 });
-
-
-dotenv.config();
 
 const app = express();
 
@@ -109,6 +113,7 @@ const startServer = async () => {
     );
   } catch (error) {
     console.error("Database Connection Error:", error);
+    process.exit(1);
   }
 };
 
